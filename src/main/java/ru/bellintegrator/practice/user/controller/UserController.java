@@ -29,7 +29,7 @@ public class UserController {
 
     @ApiOperation(value = "filterUser", nickname = "filterUser", httpMethod = "POST")
     @PostMapping(value = "/user/list")
-    public String addUser(@RequestBody UserView user) {
+    public User filterUser(@RequestBody UserView user) {
         return userService.filterUser(user);
     }
 

@@ -6,7 +6,7 @@ import ru.bellintegrator.practice.office.view.OfficeView;
 
 public interface OfficeService {
 
-    String filterOffice(int orgId, OfficeView office);
+    Office filterOffice(OfficeView office);
 
     Office getOfficeById(int id);
 

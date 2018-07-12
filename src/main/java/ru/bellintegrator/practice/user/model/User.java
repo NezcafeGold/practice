@@ -15,54 +15,114 @@ import javax.persistence.TemporalType;
 import javax.persistence.Version;
 import java.util.Date;
 
+/**
+ * Пользователь
+ */
 @Entity
 public class User {
 
+    /**
+     * Первичный ключ id
+     */
     @Id
     @GeneratedValue
     @Column(nullable = false)
     private Long id;
 
+    /**
+     * Служебное поле hibernate
+     */
     @Version
     private Integer version;
 
+    /**
+     * Имя
+     */
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
+    /**
+     * Фамилия
+     */
     @Column(name = "second_name")
     private String secondName;
 
+    /**
+     * Отчество
+     */
     @Column(name = "middle_name")
     private String middleName;
 
+    /**
+     * Должность
+     */
     @Column(nullable = false)
     private String position;
 
+    /**
+     * Телефон
+     */
     private String phone;
 
+    /**
+     * Название документа
+     */
     @Column(name = "doc_name")
     private String docName;
 
+    /**
+     * Номер документа
+     */
     @Column(name = "doc_number")
     private Long docNumber;
 
+    /**
+     * Дата выдачи документа
+     */
     @Temporal(TemporalType.DATE)
     @Column(name = "doc_date")
     private Date docDate;
 
+    /**
+     * Код гражданства
+     */
     @Column(name = "citizenship_code")
     private int citizenshipCode;
 
+    /**
+     * Идентификация
+     */
     @Column(name = "is_identified")
     private boolean isIdentified;
 
+    /**
+     * Связь многие к одному к офису
+     * @see Office
+     */
     @ManyToOne
-    @JoinColumn(name="office_id")
+    @JoinColumn(name = "office_id")
     private Office office;
 
-    public User(){
+    /**
+     * Пустой конструктор для hibernate
+     */
+    public User() {
     }
 
+    /**
+     * Конструктор - создание объекта User со следующими полями
+     *
+     * @param firstName       - Имя
+     * @param secondName      - Фамилия
+     * @param middleName      - Отчество
+     * @param position        - Должность
+     * @param phone           - Телефон
+     * @param docName         - Название документа
+     * @param docNumber       - Номер документа
+     * @param docDate         - Дата выдачи документа
+     * @param citizenshipCode - Код гражданства
+     * @param isIdentified    - Идентификация
+     */
     public User(String firstName, String secondName, String middleName, String position, String phone, String docName, Long docNumber, Date docDate, int citizenshipCode, boolean isIdentified) {
         this.firstName = firstName;
         this.secondName = secondName;
@@ -76,7 +136,10 @@ public class User {
         this.isIdentified = isIdentified;
     }
 
-    public Long getId(){
+    /**
+     * Геттеры и сеттеры для полей
+     */
+    public Long getId() {
         return id;
     }
 

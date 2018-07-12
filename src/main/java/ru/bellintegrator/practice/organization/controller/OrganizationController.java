@@ -30,7 +30,7 @@ public class OrganizationController {
 
     @ApiOperation(value = "filterOrganization", nickname = "filterOrganization", httpMethod = "POST")
     @PostMapping(value = "/organization/list")
-    public String filterOrganization(@RequestBody OrganizationView organization) {
+    public Organization filterOrganization(@RequestBody OrganizationView organization) {
         return organizationService.filterOrganization(organization);
     }
 

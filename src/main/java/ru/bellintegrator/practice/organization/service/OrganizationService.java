@@ -6,7 +6,7 @@ import ru.bellintegrator.practice.organization.view.OrganizationView;
 
 public interface OrganizationService {
     
-    String filterOrganization(OrganizationView organization);
+    Organization filterOrganization(OrganizationView organization);
 
     Organization getOrganizationById(int id);
 

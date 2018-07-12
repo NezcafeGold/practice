@@ -8,7 +8,7 @@ import ru.bellintegrator.practice.office.view.OfficeView;
 public class OfficeServiceImpl implements OfficeService {
 
     @Override
-    public String filterOffice(int orgId, OfficeView office) {
+    public Office filterOffice(OfficeView office) {
         return null;
     }
 

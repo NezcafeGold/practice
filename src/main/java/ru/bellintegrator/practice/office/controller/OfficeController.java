@@ -28,9 +28,9 @@ public class OfficeController {
     }
 
     @ApiOperation(value = "filterOffice", nickname = "filterOffice", httpMethod = "POST")
-    @PostMapping(value = "/office/list/{orgId}")
-    public String filterOffice(@RequestBody OfficeView office, @PathVariable int orgId) {
-        return officeService.filterOffice(orgId, office);
+    @PostMapping(value = "/office/list")
+    public Office filterOffice(@RequestBody OfficeView office) {
+        return officeService.filterOffice(office);
     }
 
     @ApiOperation(value = "getOfficeById", nickname = "getOfficeById", httpMethod = "GET")

@@ -6,10 +6,10 @@ import ru.bellintegrator.practice.organization.view.OrganizationView;
 
 
 @Service
-public class OrganizationServiceImpl implements OrganizationService{
+public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
-    public String filterOrganization(OrganizationView organization) {
+    public Organization filterOrganization(OrganizationView organization) {
         return null;
     }
 

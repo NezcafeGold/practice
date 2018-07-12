@@ -10,43 +10,92 @@ import javax.persistence.OneToMany;
 import javax.persistence.Version;
 import java.util.Set;
 
+/**
+ * Организация
+ */
 @Entity
 public class Organization {
 
+    /**
+     * Первичный ключ id
+     */
     @Id
     @GeneratedValue
     @Column(nullable = false)
     private Long id;
 
+    /**
+     * Служебное поле hibernate
+     */
     @Version
     private Integer version;
 
+    /**
+     * Название организации
+     */
     @Column(nullable = false)
     private String name;
 
-    @Column(name ="full_name", nullable = false)
+    /**
+     * Полное название организации
+     */
+    @Column(name = "full_name", nullable = false)
     private String fullName;
 
+    /**
+     * ИНН
+     */
     @Column(nullable = false)
     private String inn;
 
+    /**
+     * КПП
+     */
     @Column(nullable = false)
     private String kpp;
 
+    /**
+     * Адрес
+     */
     @Column(nullable = false)
     private String address;
 
+    /**
+     * Телефон
+     */
     private String phone;
 
+    /**
+     * Активность
+     */
     @Column(name = "is_active")
     private boolean isActive;
 
+    /**
+     * Связь один ко многим с офисом
+     *
+     * @see Office
+     */
     @OneToMany(mappedBy = "organization")
     private Set<Office> offices;
 
+    /**
+     * Пустой конструктор для hibernate
+     */
     public Organization() {
     }
 
+    /**
+     * Конструктор - создание объекта Office со следующими полями
+     *
+     * @param name     - Название организации
+     * @param fullName - Полное название организации
+     * @param inn      - ИНН
+     * @param kpp      - КПП
+     * @param address  - Адрес
+     * @param phone    - Телефон
+     * @param isActive - Активность
+     */
     public Organization(String name, String fullName, String inn, String kpp, String address, String phone, boolean isActive) {
         this.name = name;
         this.fullName = fullName;
@@ -57,6 +106,9 @@ public class Organization {
         this.isActive = isActive;
     }
 
+    /**
+     * Геттеры и сеттеры для полей
+     */
     public Long getId() {
         return id;
     }

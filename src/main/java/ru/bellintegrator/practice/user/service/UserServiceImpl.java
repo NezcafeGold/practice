@@ -8,7 +8,7 @@ import ru.bellintegrator.practice.user.view.UserView;
 public class UserServiceImpl implements UserService {
 
     @Override
-    public String filterUser(UserView user) {
+    public User filterUser(UserView user) {
         return null;
     }
 

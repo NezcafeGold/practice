@@ -6,7 +6,7 @@ import ru.bellintegrator.practice.user.view.UserView;
 
 public interface UserService {
 
-    String add(UserView user);
+    String filterUser(UserView user);
 
     User getUserById(int id);
 

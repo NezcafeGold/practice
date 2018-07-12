@@ -9,7 +9,7 @@ import ru.bellintegrator.practice.organization.view.OrganizationView;
 public class OrganizationServiceImpl implements OrganizationService{
 
     @Override
-    public String addOrganization(OrganizationView organization) {
+    public String filterOrganization(OrganizationView organization) {
         return null;
     }
 

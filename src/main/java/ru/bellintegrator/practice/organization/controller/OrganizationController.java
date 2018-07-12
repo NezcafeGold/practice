@@ -3,7 +3,13 @@ package ru.bellintegrator.practice.organization.controller;
 import io.swagger.annotations.ApiOperation;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ru.bellintegrator.practice.organization.model.Organization;
 import ru.bellintegrator.practice.organization.service.OrganizationService;
 import ru.bellintegrator.practice.organization.view.OrganizationView;
@@ -22,10 +28,10 @@ public class OrganizationController {
         this.organizationService = organizationService;
     }
 
-    @ApiOperation(value = "addOrganization", nickname = "addOrganization", httpMethod = "POST")
+    @ApiOperation(value = "filterOrganization", nickname = "filterOrganization", httpMethod = "POST")
     @PostMapping(value = "/organization/list")
-    public String addOrganization(@RequestBody OrganizationView organization) {
-        return organizationService.addOrganization(organization);
+    public String filterOrganization(@RequestBody OrganizationView organization) {
+        return organizationService.filterOrganization(organization);
     }
 
     @ApiOperation(value = "getOrganizationById", nickname = "getOrganizationById", httpMethod = "GET")

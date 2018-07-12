@@ -1,8 +1,15 @@
 package ru.bellintegrator.practice.user.controller;
 
 import io.swagger.annotations.ApiOperation;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ru.bellintegrator.practice.user.model.User;
 import ru.bellintegrator.practice.user.service.UserService;
 import ru.bellintegrator.practice.user.view.UserView;
@@ -20,10 +27,10 @@ public class UserController {
         this.userService = userService;
     }
 
-    @ApiOperation(value = "addUser", nickname = "addUser", httpMethod = "POST")
+    @ApiOperation(value = "filterUser", nickname = "filterUser", httpMethod = "POST")
     @PostMapping(value = "/user/list")
     public String addUser(@RequestBody UserView user) {
-        return userService.add(user);
+        return userService.filterUser(user);
     }
 
     @ApiOperation(value = "getUserById", nickname = "getUserById", httpMethod = "GET")

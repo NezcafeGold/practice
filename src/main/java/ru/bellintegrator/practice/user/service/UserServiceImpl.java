@@ -8,7 +8,7 @@ import ru.bellintegrator.practice.user.view.UserView;
 public class UserServiceImpl implements UserService {
 
     @Override
-    public String add(UserView user) {
+    public String filterUser(UserView user) {
         return null;
     }
 
@@ -19,11 +19,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(UserView user) {
-
     }
 
     @Override
     public void saveUser(UserView user) {
-
     }
 }

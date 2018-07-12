@@ -1,8 +1,15 @@
 package ru.bellintegrator.practice.office.controller;
 
 import io.swagger.annotations.ApiOperation;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ru.bellintegrator.practice.office.model.Office;
 import ru.bellintegrator.practice.office.service.OfficeService;
 import ru.bellintegrator.practice.office.view.OfficeView;
@@ -20,10 +27,10 @@ public class OfficeController {
         this.officeService = officeService;
     }
 
-    @ApiOperation(value = "addOffice", nickname = "addOffice", httpMethod = "POST")
+    @ApiOperation(value = "filterOffice", nickname = "filterOffice", httpMethod = "POST")
     @PostMapping(value = "/office/list/{orgId}")
-    public String addOffice(@RequestBody OfficeView office, @PathVariable int orgId) {
-        return officeService.addOffice(orgId, office);
+    public String filterOffice(@RequestBody OfficeView office, @PathVariable int orgId) {
+        return officeService.filterOffice(orgId, office);
     }
 
     @ApiOperation(value = "getOfficeById", nickname = "getOfficeById", httpMethod = "GET")

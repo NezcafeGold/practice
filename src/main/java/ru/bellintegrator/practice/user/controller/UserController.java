@@ -35,7 +35,7 @@ public class UserController {
 
     @ApiOperation(value = "getUserById", nickname = "getUserById", httpMethod = "GET")
     @GetMapping(value = "/user/{id}")
-    public User getOrganizationById(@PathVariable int id) {
+    public User getUserById(@PathVariable int id) {
         return userService.getUserById(id);
     }
 

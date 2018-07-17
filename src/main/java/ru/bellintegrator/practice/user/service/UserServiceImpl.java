@@ -4,23 +4,38 @@ import org.springframework.stereotype.Service;
 import ru.bellintegrator.practice.user.model.User;
 import ru.bellintegrator.practice.user.view.UserView;
 
+/**
+ * {@inheritDoc}
+ */
 @Service
 public class UserServiceImpl implements UserService {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public User filterUser(UserView user) {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public User getUserById(int id) {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateUser(UserView user) {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void saveUser(UserView user) {
     }

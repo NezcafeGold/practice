@@ -1,5 +1,6 @@
 package ru.bellintegrator.practice.office.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import ru.bellintegrator.practice.office.view.OfficeView;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+@Api(value = "Контроллер для управление данными офиса")
 @RestController
 @RequestMapping(value = "/api", produces = APPLICATION_JSON_VALUE)
 public class OfficeController {
@@ -27,25 +29,25 @@ public class OfficeController {
         this.officeService = officeService;
     }
 
-    @ApiOperation(value = "filterOffice", nickname = "filterOffice", httpMethod = "POST")
+    @ApiOperation(value = "Принимает данные и возвращает отфильтрованный список офисов", nickname = "filterOffice", httpMethod = "POST")
     @PostMapping(value = "/office/list")
     public Office filterOffice(@RequestBody OfficeView office) {
         return officeService.filterOffice(office);
     }
 
-    @ApiOperation(value = "getOfficeById", nickname = "getOfficeById", httpMethod = "GET")
+    @ApiOperation(value = "Возвращает офис по id", nickname = "getOfficeById", httpMethod = "GET")
     @GetMapping(value = "/office/{id}")
     public Office getOfficeById(@PathVariable int id) {
         return officeService.getOfficeById(id);
     }
 
-    @ApiOperation(value = "updateOffice", nickname = "updateOffice", httpMethod = "POST")
+    @ApiOperation(value = "Обновляет данные офиса", nickname = "updateOffice", httpMethod = "POST")
     @PostMapping(value = "/office/update")
     public void updateOffice(@RequestBody OfficeView office) {
         officeService.updateOffice(office);
     }
 
-    @ApiOperation(value = "saveOffice", nickname = "saveOffice", httpMethod = "POST")
+    @ApiOperation(value = "Сохраненяет данные офиса", nickname = "saveOffice", httpMethod = "POST")
     @PostMapping(value = "/office/save")
     public void saveOffice(@RequestBody OfficeView office) {
         officeService.saveOffice(office);

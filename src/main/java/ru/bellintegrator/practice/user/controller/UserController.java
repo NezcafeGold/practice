@@ -1,5 +1,6 @@
 package ru.bellintegrator.practice.user.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +19,13 @@ import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+@Api(value = "Контроллер для управление данными пользователя")
 @RestController
 @RequestMapping(value = "/api", produces = APPLICATION_JSON_VALUE)
 public class UserController {
 
     private final UserService userService;
-
+    
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
@@ -42,13 +44,13 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @ApiOperation(value = "Обновление данных пользователя", nickname = "updateUser", httpMethod = "POST")
+    @ApiOperation(value = "Обновляет данные пользователя", nickname = "updateUser", httpMethod = "POST")
     @PostMapping(value = "/user/update")
     public void updateUser(@RequestBody UserView user) {
         userService.updateUser(user);
     }
 
-    @ApiOperation(value = "Сохранение данных пользователя", nickname = "saveUser", httpMethod = "POST")
+    @ApiOperation(value = "Сохраненяет данные пользователя", nickname = "saveUser", httpMethod = "POST")
     @PostMapping(value = "/user/save")
     public void saveOffice(@RequestBody UserView user) {
         userService.saveUser(user);

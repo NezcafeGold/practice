@@ -5,6 +5,7 @@ import ru.bellintegrator.practice.user.model.User;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -36,18 +37,19 @@ public class Office {
     /**
      * Название офиса
      */
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String name;
 
     /**
      * Адрес
      */
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String address;
 
     /**
      * Телефон
      */
+    @Column(nullable = false, length = 12)
     private String phone;
 
     /**
@@ -60,7 +62,7 @@ public class Office {
      * Связь многие к одному с организацией
      * @see Organization
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "org_id")
     private Organization organization;
 

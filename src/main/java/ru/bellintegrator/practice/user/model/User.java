@@ -2,16 +2,15 @@ package ru.bellintegrator.practice.user.model;
 
 
 import ru.bellintegrator.practice.office.model.Office;
-import ru.bellintegrator.practice.organization.model.Organization;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.OneToOne;
 import javax.persistence.Version;
 import java.util.Date;
 
@@ -38,56 +37,32 @@ public class User {
     /**
      * Имя
      */
-    @Column(name = "first_name", nullable = false)
+    @Column(name = "first_name", length = 50, nullable = false)
     private String firstName;
 
     /**
      * Фамилия
      */
-    @Column(name = "second_name")
+    @Column(name = "second_name", length = 50)
     private String secondName;
 
     /**
      * Отчество
      */
-    @Column(name = "middle_name")
+    @Column(name = "middle_name", length = 50)
     private String middleName;
 
     /**
      * Должность
      */
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String position;
 
     /**
      * Телефон
      */
+    @Column(length = 12)
     private String phone;
-
-    /**
-     * Название документа
-     */
-    @Column(name = "doc_name")
-    private String docName;
-
-    /**
-     * Номер документа
-     */
-    @Column(name = "doc_number")
-    private Long docNumber;
-
-    /**
-     * Дата выдачи документа
-     */
-    @Temporal(TemporalType.DATE)
-    @Column(name = "doc_date")
-    private Date docDate;
-
-    /**
-     * Код гражданства
-     */
-    @Column(name = "citizenship_code")
-    private int citizenshipCode;
 
     /**
      * Идентификация
@@ -99,9 +74,16 @@ public class User {
      * Связь многие к одному к офису
      * @see Office
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "office_id")
     private Office office;
+
+    /**
+     * Связь один к одному с документом
+     * @see Document
+     */
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
+    private Document document;
 
     /**
      * Пустой конструктор для hibernate
@@ -123,16 +105,12 @@ public class User {
      * @param citizenshipCode - Код гражданства
      * @param isIdentified    - Идентификация
      */
-    public User(String firstName, String secondName, String middleName, String position, String phone, String docName, Long docNumber, Date docDate, int citizenshipCode, boolean isIdentified) {
+    public User(String firstName, String secondName, String middleName, String position, String phone, int docName, Long docNumber, Date docDate, int citizenshipCode, boolean isIdentified) {
         this.firstName = firstName;
         this.secondName = secondName;
         this.middleName = middleName;
         this.position = position;
         this.phone = phone;
-        this.docName = docName;
-        this.docNumber = docNumber;
-        this.docDate = docDate;
-        this.citizenshipCode = citizenshipCode;
         this.isIdentified = isIdentified;
     }
 
@@ -181,38 +159,6 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public String getDocName() {
-        return docName;
-    }
-
-    public void setDocName(String docName) {
-        this.docName = docName;
-    }
-
-    public Long getDocNumber() {
-        return docNumber;
-    }
-
-    public void setDocNumber(Long docNumber) {
-        this.docNumber = docNumber;
-    }
-
-    public Date getDocDate() {
-        return docDate;
-    }
-
-    public void setDocDate(Date docDate) {
-        this.docDate = docDate;
-    }
-
-    public int getCitizenshipCode() {
-        return citizenshipCode;
-    }
-
-    public void setCitizenshipCode(int citizenshipCode) {
-        this.citizenshipCode = citizenshipCode;
     }
 
     public boolean isIdentified() {

@@ -1,56 +1,36 @@
 package ru.bellintegrator.practice.organization.view;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-/**
- * Организация
- */
+@ApiModel(value = "Организация")
 public class OrganizationView {
 
-    /**
-     * Первичный ключ
-     */
-    @ApiModelProperty(hidden = true)
+    @ApiModelProperty(hidden = true, value = "Первичный ключ id")
     public String id;
 
-    /**
-     * Название организации
-     */
+    @ApiModelProperty(value = "Название организации")
     public String name;
 
-    /**
-     * Полное название организации
-     */
+    @ApiModelProperty(value = "Полное название организации")
     public String fullName;
 
-    /**
-     * ИНН
-     */
+    @ApiModelProperty(value = "ИНН")
     public String inn;
 
-    /**
-     * КПП
-     */
+    @ApiModelProperty(value = "КПП")
     public String kpp;
 
-    /**
-     * Адрес
-     */
+    @ApiModelProperty(value = "Адрес")
     public String address;
 
-    /**
-     * Телефон
-     */
+    @ApiModelProperty(value = "Телефон")
     public String phone;
 
-    /**
-     * Активность
-     */
+    @ApiModelProperty(value = "Активность")
     public boolean isActive;
 
-    /**
-     * Переопределенный toString()
-     */
+    @ApiModelProperty(value = "Переопределенный toString()")
     @Override
     public String toString() {
         return "{id:" + id +

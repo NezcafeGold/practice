@@ -4,6 +4,8 @@ package ru.bellintegrator.practice.user.service;
 import ru.bellintegrator.practice.user.model.User;
 import ru.bellintegrator.practice.user.view.UserView;
 
+import java.util.List;
+
 /**
  * Сервис
  */
@@ -14,7 +16,7 @@ public interface UserService {
      *
      * @param user
      */
-    User filterUser(UserView user);
+    List<UserView> filterUser(UserView user);
 
     /**
      * Получить пользователя по id

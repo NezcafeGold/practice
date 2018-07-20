@@ -1,78 +1,51 @@
 package ru.bellintegrator.practice.user.view;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
 
-/**
- * Пользователь
- */
+
+@ApiModel(value = "Пользователь")
 public class UserView {
 
-    /**
-     * Первичный ключ id
-     */
-    @ApiModelProperty(hidden = true)
+    @ApiModelProperty(hidden = true, value = "Первичный ключ id")
     public String id;
 
-    /**
-     * Имя
-     */
+    @ApiModelProperty(value = "Имя")
     public String firstName;
 
-    /**
-     * Фамилия
-     */
+    @ApiModelProperty(value = "Фамилия")
     public String secondName;
 
-    /**
-     * Отчество
-     */
+    @ApiModelProperty(value = "Отчество")
     public String middleName;
 
-    /**
-     * Должность
-     */
+    @ApiModelProperty(value = "Должность")
     public String position;
 
-    /**
-     * Телефон
-     */
+    @ApiModelProperty(value = "Телефон")
     public String phone;
 
-    /**
-     * Название документа
-     */
+    @ApiModelProperty(value = "Название документа")
     public String docName;
 
-    /**
-     * Номер документа
-     */
+    @ApiModelProperty(value = "Номер документа")
     public Long docNumber;
 
-    /**
-     * Дата выдачи документа
-     */
+    @ApiModelProperty(value = "Дата выдачи документа")
     public Date docDate;
 
-    /**
-     * Страна гражданства
-     */
+    @ApiModelProperty(value = "Страна гражданства")
     public String citizenshipName;
 
-    /**
-     * Код гражданства
-     */
+    @ApiModelProperty(value = "Код гражданства")
     public int citizenshipCode;
 
-    /**
-     * Идентификация
-     */
+    @ApiModelProperty(value = "Идентификация")
     public boolean isIdentified;
 
-    /**
-     * Переопределенный toString()
-     */
+    @ApiModelProperty(value = "Переопределенный toString()")
     @Override
     public String toString() {
         return "{" +

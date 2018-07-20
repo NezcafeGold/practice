@@ -1,42 +1,28 @@
 package ru.bellintegrator.practice.office.view;
 
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-/**
- * Офис
- */
+@ApiModel(value = "Офис")
 public class OfficeView {
 
-    /**
-     * Первичный ключ
-     */
-    @ApiModelProperty(hidden = true)
+    @ApiModelProperty(hidden = true, value = "Первичный ключ id")
     public String id;
 
-    /**
-     * Название офиса
-     */
+    @ApiModelProperty(value = "Название офиса")
     public String name;
 
-    /**
-     * Адрес
-     */
+    @ApiModelProperty(value = "Адрес")
     public String address;
 
-    /**
-     * Телефон
-     */
+    @ApiModelProperty(value = "Телефон")
     public String phone;
 
-    /**
-     * Активность
-     */
+    @ApiModelProperty(value = "Активность")
     public boolean isActive;
 
-    /**
-     * Переопределенный toString()
-     */
+    @ApiModelProperty(value = "Переопределенный toString()")
     @Override
     public String toString() {
         return "{id:" + id + ";name:" + name + ";address:" +address +";phone:" + phone + ";isActive:" + isActive + "}";

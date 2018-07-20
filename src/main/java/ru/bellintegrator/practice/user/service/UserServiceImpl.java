@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 import ru.bellintegrator.practice.user.model.User;
 import ru.bellintegrator.practice.user.view.UserView;
 
+import java.util.List;
+
 /**
  * {@inheritDoc}
  */
@@ -14,7 +16,7 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    public User filterUser(UserView user) {
+    public List<UserView> filterUser(UserView user) {
         return null;
     }
 

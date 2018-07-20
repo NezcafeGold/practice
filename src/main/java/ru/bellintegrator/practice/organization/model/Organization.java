@@ -4,6 +4,7 @@ import ru.bellintegrator.practice.office.model.Office;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -33,36 +34,37 @@ public class Organization {
     /**
      * Название организации
      */
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String name;
 
     /**
      * Полное название организации
      */
-    @Column(name = "full_name", nullable = false)
+    @Column(name = "full_name", nullable = false, length = 100)
     private String fullName;
 
     /**
      * ИНН
      */
-    @Column(nullable = false)
+    @Column(nullable = false, length = 12)
     private String inn;
 
     /**
      * КПП
      */
-    @Column(nullable = false)
+    @Column(nullable = false, length = 12)
     private String kpp;
 
     /**
      * Адрес
      */
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String address;
 
     /**
      * Телефон
      */
+    @Column(length = 12)
     private String phone;
 
     /**

@@ -1,16 +1,20 @@
-package ru.bellintegrator.practice.doc.model;
+package ru.bellintegrator.practice.dictionary.docType.model;
+
+import ru.bellintegrator.practice.user.model.Document;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Version;
+import java.util.Set;
 
 /**
  * Документ
  */
-@Entity
-public class Doc {
+@Entity(name = "Doc_type")
+public class DocType {
 
     /**
      * Первичный ключ id
@@ -29,28 +33,35 @@ public class Doc {
     /**
      * Название документа
      */
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String name;
 
     /**
      * Код документа
      */
-    @Column(nullable = false, length = 2)
+    @Column(nullable = false, name = "code")
     private int code;
+
+    /**
+     * Связь один ко многим с документом
+     * @see Document
+     */
+    @OneToMany(mappedBy = "docType")
+    private Set<Document> document;
 
     /**
      * Пустой конструктор для hibernate
      */
-    public Doc() {
+    public DocType() {
     }
 
     /**
-     * Конструктор - создание объекта Doc со следующими полями
+     * Конструктор - создание объекта DocType со следующими полями
      *
      * @param name - Название офиса
      * @param code - Код документа
      */
-    public Doc(String name, int code) {
+    public DocType(String name, int code) {
         this.name = name;
         this.code = code;
     }

@@ -1,10 +1,14 @@
-package ru.bellintegrator.practice.country.model;
+package ru.bellintegrator.practice.dictionary.country.model;
+
+import ru.bellintegrator.practice.user.model.Document;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Version;
+import java.util.Set;
 
 /**
  * Страна
@@ -29,7 +33,7 @@ public class Country {
     /**
      * Название страны
      */
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String name;
 
     /**
@@ -37,6 +41,13 @@ public class Country {
      */
     @Column(nullable = false)
     private int code;
+
+    /**
+     * Связь один ко многим с документом
+     * @see Document
+     */
+    @OneToMany(mappedBy = "country")
+    private Set<Document> document;
 
     /**
      * Пустой конструктор для hibernate

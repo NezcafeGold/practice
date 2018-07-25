@@ -1,6 +1,6 @@
-package ru.bellintegrator.practice.dictionary.docType.service;
+package ru.bellintegrator.practice.dictionary.doctype.service;
 
-import ru.bellintegrator.practice.dictionary.docType.view.DocTypeView;
+import ru.bellintegrator.practice.dictionary.doctype.view.DocTypeView;
 
 import java.util.List;
 

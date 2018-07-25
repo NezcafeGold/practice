@@ -1,10 +1,12 @@
 package ru.bellintegrator.practice.organization.view;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-@ApiModel(value = "Организация")
-public class OrganizationView {
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@ApiModel(value = "Вид организации после фильтра")
+public class OrganizationFilterView {
 
     @ApiModelProperty(hidden = true, value = "Первичный ключ id")
     public Long id;
@@ -12,34 +14,21 @@ public class OrganizationView {
     @ApiModelProperty(value = "Название организации")
     public String name;
 
-    @ApiModelProperty(value = "Полное название организации")
-    public String fullName;
-
-    @ApiModelProperty(value = "ИНН")
-    public String inn;
-
-    @ApiModelProperty(value = "КПП")
-    public String kpp;
-
-    @ApiModelProperty(value = "Адрес")
-    public String address;
-
-    @ApiModelProperty(value = "Телефон")
-    public String phone;
-
     @ApiModelProperty(value = "Активность")
     public Boolean isActive;
+
+    public OrganizationFilterView() {
+    }
+
+    public OrganizationFilterView(String name) {
+        this.name = name;
+    }
 
     @ApiModelProperty(value = "Переопределенный toString()")
     @Override
     public String toString() {
         return "{id:" + id +
                 ";name:" + name +
-                ";fullName:" + fullName +
-                ";inn:" + inn +
-                ";kpp:" + kpp +
-                ";address:" + address +
-                ";phone:" + phone +
                 ";isActive:" + isActive +
                 "}";
     }

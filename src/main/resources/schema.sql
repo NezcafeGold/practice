@@ -13,10 +13,24 @@ CREATE TABLE IF NOT EXISTS User (
 CREATE TABLE IF NOT EXISTS Document (
   id             INTEGER PRIMARY KEY AUTO_INCREMENT,
   version        INTEGER NOT NULL,
-  doc_type_id    INTEGER,
+  doc_type_id    INTEGER NOT NULL,
   doc_number     VARCHAR(20),
   doc_date       VARCHAR(11),
   citizenship_id INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS Country (
+  id      INTEGER PRIMARY KEY AUTO_INCREMENT,
+  version INTEGER      NOT NULL,
+  name    VARCHAR(100) NOT NULL,
+  code    VARCHAR(5)   NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Doc_type (
+  id      INTEGER PRIMARY KEY AUTO_INCREMENT,
+  version INTEGER      NOT NULL,
+  name    VARCHAR(100) NOT NULL,
+  code    VARCHAR(5)   NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Organization (
@@ -39,20 +53,6 @@ CREATE TABLE IF NOT EXISTS Office (
   phone     VARCHAR(12),
   is_active BOOLEAN,
   org_id    INTEGER
-);
-
-CREATE TABLE IF NOT EXISTS Country (
-  id      INTEGER PRIMARY KEY AUTO_INCREMENT,
-  version INTEGER      NOT NULL,
-  name    VARCHAR(100) NOT NULL,
-  code    INTEGER      NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS Doc_type (
-  id      INTEGER PRIMARY KEY AUTO_INCREMENT,
-  version INTEGER      NOT NULL,
-  name    VARCHAR(100) NOT NULL,
-  code    INTEGER      NOT NULL
 );
 
 CREATE INDEX IX_User_id

@@ -1,4 +1,4 @@
-package ru.bellintegrator.practice.dictionary.docType.view;
+package ru.bellintegrator.practice.dictionary.doctype.view;
 
 
 import io.swagger.annotations.ApiModel;
@@ -11,7 +11,7 @@ public class DocTypeView {
     public String name;
 
     @ApiModelProperty(value = "Код документа")
-    public int code;
+    public String code;
 
     @ApiModelProperty(value = "Переопределенный toString()")
     @Override

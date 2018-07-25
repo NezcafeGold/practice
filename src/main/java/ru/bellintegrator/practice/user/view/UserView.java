@@ -10,7 +10,7 @@ import java.util.Date;
 public class UserView {
 
     @ApiModelProperty(hidden = true, value = "Первичный ключ id")
-    public String id;
+    public Long id;
 
     @ApiModelProperty(value = "Имя")
     public String firstName;
@@ -27,6 +27,9 @@ public class UserView {
     @ApiModelProperty(value = "Телефон")
     public String phone;
 
+    @ApiModelProperty(value = "Код документа")
+    public String docCode;
+
     @ApiModelProperty(value = "Название документа")
     public String docName;
 
@@ -40,10 +43,13 @@ public class UserView {
     public String citizenshipName;
 
     @ApiModelProperty(value = "Код гражданства")
-    public int citizenshipCode;
+    public String citizenshipCode;
 
     @ApiModelProperty(value = "Идентификация")
-    public boolean isIdentified;
+    public Boolean isIdentified;
+
+    @ApiModelProperty(value = "id офиса")
+    public Long officeId;
 
     @ApiModelProperty(value = "Переопределенный toString()")
     @Override
@@ -55,6 +61,7 @@ public class UserView {
                 ";middleName:" + middleName +
                 ";position:" + position +
                 ";phone:" + phone +
+                ";docCode:" + docCode +
                 ";docName:" + docName +
                 ";docNumber:" + docNumber +
                 ";docDate:" + docDate +

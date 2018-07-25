@@ -1,8 +1,7 @@
 package ru.bellintegrator.practice.user.model;
 
 import ru.bellintegrator.practice.dictionary.country.model.Country;
-import ru.bellintegrator.practice.dictionary.docType.model.DocType;
-import ru.bellintegrator.practice.user.model.User;
+import ru.bellintegrator.practice.dictionary.doctype.model.DocType;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Version;
@@ -50,23 +48,23 @@ public class Document {
     private Date docDate;
 
     /**
-     * Связь один к одному
+     * Пользователь документа
      */
     @OneToOne(fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
     private User user;
 
     /**
-     * Название документа, связь многие к одному с типом документов
+     * Тип документа
      *
      * @see DocType
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "doc_type_id")
+    @JoinColumn(name = "doc_type_id", nullable = false)
     private DocType docType;
 
     /**
-     * Код гражданства, связь многие к одному со страной
+     * Код гражданства
      *
      * @see Country
      */
@@ -83,11 +81,11 @@ public class Document {
     /**
      * Конструктор создания объекта Document
      *
-     * @param docNumber - Номер документа
-     * @param docDate   - Дата регистрации документа
-     * @param user      - Пользователь документа
-     * @param docType   - Тип документа
-     * @param country   - Страна проживания
+     * @param docNumber Номер документа
+     * @param docDate   Дата регистрации документа
+     * @param user      Пользователь документа
+     * @param docType   Тип документа
+     * @param country   Страна проживания
      */
     public Document(Long docNumber, Date docDate, User user, DocType docType, Country country) {
         this.docNumber = docNumber;
@@ -97,9 +95,6 @@ public class Document {
         this.country = country;
     }
 
-    /**
-     * Геттеры и сеттеры для полей
-     */
     public Long getDocNumber() {
         return docNumber;
     }

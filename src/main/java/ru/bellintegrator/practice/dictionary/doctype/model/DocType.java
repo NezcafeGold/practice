@@ -1,4 +1,4 @@
-package ru.bellintegrator.practice.dictionary.docType.model;
+package ru.bellintegrator.practice.dictionary.doctype.model;
 
 import ru.bellintegrator.practice.user.model.Document;
 
@@ -39,15 +39,8 @@ public class DocType {
     /**
      * Код документа
      */
-    @Column(nullable = false, name = "code")
-    private int code;
-
-    /**
-     * Связь один ко многим с документом
-     * @see Document
-     */
-    @OneToMany(mappedBy = "docType")
-    private Set<Document> document;
+    @Column(nullable = false, length = 5)
+    private String code;
 
     /**
      * Пустой конструктор для hibernate
@@ -58,17 +51,23 @@ public class DocType {
     /**
      * Конструктор - создание объекта DocType со следующими полями
      *
-     * @param name - Название офиса
-     * @param code - Код документа
+     * @param name Название офиса
+     * @param code Код документа
      */
-    public DocType(String name, int code) {
+    public DocType(String name, String code) {
         this.name = name;
         this.code = code;
     }
 
     /**
-     * Геттеры и сеттеры для полей
+     * Конструктор - создание объекта DocType со следующим полем
+     *
+     * @param name Название офиса
      */
+    public DocType(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
@@ -77,11 +76,11 @@ public class DocType {
         this.name = name;
     }
 
-    public int getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public void setCode(String code) {
         this.code = code;
     }
 

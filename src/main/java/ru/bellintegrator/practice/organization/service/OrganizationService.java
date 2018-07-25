@@ -1,8 +1,10 @@
 package ru.bellintegrator.practice.organization.service;
 
 
-import ru.bellintegrator.practice.organization.model.Organization;
+import ru.bellintegrator.practice.organization.view.OrganizationFilterView;
 import ru.bellintegrator.practice.organization.view.OrganizationView;
+
+import java.util.List;
 
 /**
  * Сервис
@@ -14,14 +16,14 @@ public interface OrganizationService {
      *
      * @param organization
      */
-    Organization filterOrganization(OrganizationView organization);
+    List<OrganizationFilterView> filterOrganization(OrganizationView organization);
 
     /**
      * Получить организацию по id
      *
      * @param id
      */
-    Organization getOrganizationById(int id);
+    OrganizationView getOrganizationById(Long id);
 
     /**
      * Обновить организацию

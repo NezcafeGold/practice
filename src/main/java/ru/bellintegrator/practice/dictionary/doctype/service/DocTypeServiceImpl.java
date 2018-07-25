@@ -1,7 +1,8 @@
-package ru.bellintegrator.practice.dictionary.docType.service;
+package ru.bellintegrator.practice.dictionary.doctype.service;
 
 import org.springframework.stereotype.Service;
-import ru.bellintegrator.practice.dictionary.docType.view.DocTypeView;
+import org.springframework.transaction.annotation.Transactional;
+import ru.bellintegrator.practice.dictionary.doctype.view.DocTypeView;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ public class DocTypeServiceImpl implements DocTypeService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional
     public List<DocTypeView> getDocTypes() {
        return null;
     }

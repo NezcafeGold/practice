@@ -68,10 +68,11 @@ public class User {
      * Идентификация
      */
     @Column(name = "is_identified")
-    private boolean isIdentified;
+    private Boolean isIdentified;
 
     /**
-     * Связь многие к одному к офису
+     * Офис пользователя
+     *
      * @see Office
      */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -79,7 +80,8 @@ public class User {
     private Office office;
 
     /**
-     * Связь один к одному с документом
+     * Документ пользователя
+     *
      * @see Document
      */
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
@@ -94,29 +96,23 @@ public class User {
     /**
      * Конструктор - создание объекта User со следующими полями
      *
-     * @param firstName       - Имя
-     * @param secondName      - Фамилия
-     * @param middleName      - Отчество
-     * @param position        - Должность
-     * @param phone           - Телефон
-     * @param docName         - Название документа
-     * @param docNumber       - Номер документа
-     * @param docDate         - Дата выдачи документа
-     * @param citizenshipCode - Код гражданства
-     * @param isIdentified    - Идентификация
+     * @param firstName    Имя
+     * @param secondName   Фамилия
+     * @param middleName   Отчество
+     * @param position     Должность
+     * @param phone        Телефон
+     * @param isIdentified Идентификация
      */
-    public User(String firstName, String secondName, String middleName, String position, String phone, int docName, Long docNumber, Date docDate, int citizenshipCode, boolean isIdentified) {
+    public User(String firstName, String secondName, String middleName, String position, String phone, boolean isIdentified) {
         this.firstName = firstName;
         this.secondName = secondName;
         this.middleName = middleName;
         this.position = position;
         this.phone = phone;
         this.isIdentified = isIdentified;
+        this.office = office;
     }
 
-    /**
-     * Геттеры и сеттеры для полей
-     */
     public Long getId() {
         return id;
     }
@@ -161,7 +157,7 @@ public class User {
         this.phone = phone;
     }
 
-    public boolean isIdentified() {
+    public boolean getIdentified() {
         return isIdentified;
     }
 
@@ -171,5 +167,9 @@ public class User {
 
     public Office getOffice() {
         return office;
+    }
+
+    public void setOffice(Office office) {
+        this.office = office;
     }
 }

@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bellintegrator.practice.organization.model.Organization;
 import ru.bellintegrator.practice.organization.service.OrganizationService;
+import ru.bellintegrator.practice.organization.view.OrganizationFilterView;
 import ru.bellintegrator.practice.organization.view.OrganizationView;
 
+
+import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -32,13 +35,13 @@ public class OrganizationController {
 
     @ApiOperation(value = "Принимает данные и возвращает отфильтрованный список организаций", nickname = "filterOrganization", httpMethod = "POST")
     @PostMapping(value = "/organization/list")
-    public Organization filterOrganization(@RequestBody OrganizationView organization) {
+    public List<OrganizationFilterView> filterOrganization(@RequestBody OrganizationView organization) {
         return organizationService.filterOrganization(organization);
     }
 
     @ApiOperation(value = "Возвращает организацию по id", nickname = "getOrganizationById", httpMethod = "GET")
     @GetMapping(value = "/organization/{id}")
-    public Organization getOrganizationById(@PathVariable int id) {
+    public OrganizationView getOrganizationById(@PathVariable Long id) {
         return organizationService.getOrganizationById(id);
     }
 

@@ -74,7 +74,7 @@ public class Organization {
     private boolean isActive;
 
     /**
-     * Связь один ко многим с офисом
+     * Офисы организации
      *
      * @see Office
      */
@@ -90,15 +90,17 @@ public class Organization {
     /**
      * Конструктор - создание объекта Organization со следующими полями
      *
-     * @param name     - Название организации
-     * @param fullName - Полное название организации
-     * @param inn      - ИНН
-     * @param kpp      - КПП
-     * @param address  - Адрес
-     * @param phone    - Телефон
-     * @param isActive - Активность
+     * @param id       Идентификатор организации
+     * @param name     Название организации
+     * @param fullName Полное название организации
+     * @param inn      ИНН
+     * @param kpp      КПП
+     * @param address  Адрес
+     * @param phone    Телефон
+     * @param isActive Активность
      */
-    public Organization(String name, String fullName, String inn, String kpp, String address, String phone, boolean isActive) {
+    public Organization(Long id, String name, String fullName, String inn, String kpp, String address, String phone, boolean isActive) {
+        this.id = id;
         this.name = name;
         this.fullName = fullName;
         this.inn = inn;
@@ -109,8 +111,26 @@ public class Organization {
     }
 
     /**
-     * Геттеры и сеттеры для полей
+     * Конструктор - создание объекта Organization со следующими полями
+     *
+     * @param name     Название организации
+     * @param fullName Полное название организации
+     * @param inn      ИНН
+     * @param kpp      КПП
+     * @param address  Адрес
+     * @param phone    Телефон
+     * @param isActive Активность
      */
+    public Organization(String name, String fullName, String inn, String kpp, String address, String phone, Boolean isActive) {
+        this.name = name;
+        this.fullName = fullName;
+        this.inn = inn;
+        this.kpp = kpp;
+        this.address = address;
+        this.phone = phone;
+        this.isActive = isActive;
+    }
+
     public Long getId() {
         return id;
     }
@@ -163,7 +183,7 @@ public class Organization {
         this.phone = phone;
     }
 
-    public boolean isActive() {
+    public boolean getActive() {
         return isActive;
     }
 

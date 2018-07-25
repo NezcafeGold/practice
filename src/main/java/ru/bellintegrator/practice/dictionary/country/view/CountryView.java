@@ -10,7 +10,7 @@ public class CountryView {
     public String name;
 
     @ApiModelProperty(value = "Код страны")
-    public int code;
+    public String code;
 
     @ApiModelProperty(value = "Переопределенный toString()")
     @Override

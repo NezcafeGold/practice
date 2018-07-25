@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bellintegrator.practice.office.model.Office;
 import ru.bellintegrator.practice.office.service.OfficeService;
+import ru.bellintegrator.practice.office.view.OfficeFilterView;
 import ru.bellintegrator.practice.office.view.OfficeView;
+
+import java.util.List;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -31,13 +34,13 @@ public class OfficeController {
 
     @ApiOperation(value = "Принимает данные и возвращает отфильтрованный список офисов", nickname = "filterOffice", httpMethod = "POST")
     @PostMapping(value = "/office/list")
-    public Office filterOffice(@RequestBody OfficeView office) {
+    public List<OfficeFilterView> filterOffice(@RequestBody OfficeView office) {
         return officeService.filterOffice(office);
     }
 
     @ApiOperation(value = "Возвращает офис по id", nickname = "getOfficeById", httpMethod = "GET")
     @GetMapping(value = "/office/{id}")
-    public Office getOfficeById(@PathVariable int id) {
+    public OfficeView getOfficeById(@PathVariable Long id) {
         return officeService.getOfficeById(id);
     }
 

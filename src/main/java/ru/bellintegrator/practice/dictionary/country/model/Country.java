@@ -39,15 +39,8 @@ public class Country {
     /**
      * Код страны
      */
-    @Column(nullable = false)
-    private int code;
-
-    /**
-     * Связь один ко многим с документом
-     * @see Document
-     */
-    @OneToMany(mappedBy = "country")
-    private Set<Document> document;
+    @Column(nullable = false, length = 5)
+    private String code;
 
     /**
      * Пустой конструктор для hibernate
@@ -58,17 +51,22 @@ public class Country {
     /**
      * Конструктор - создание объекта Country со следующими полями
      *
-     * @param name - Название страны
-     * @param code - Код страны
+     * @param name Название страны
+     * @param code Код страны
      */
-    public Country(String name, int code) {
+    public Country(String name, String code) {
         this.name = name;
         this.code = code;
     }
 
     /**
-     * Геттеры и сеттеры для полей
+     * Конструктор - создание объекта Country со следующими полями
+     *
+     * @param code Код страны
      */
+    public Country(String code) {
+    }
+
     public String getName() {
         return name;
     }
@@ -77,11 +75,11 @@ public class Country {
         this.name = name;
     }
 
-    public int getCode() {
+    public String getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public void setCode(String code) {
         this.code = code;
     }
 

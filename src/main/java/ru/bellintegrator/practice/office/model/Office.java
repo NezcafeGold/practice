@@ -59,7 +59,8 @@ public class Office {
     private boolean isActive;
 
     /**
-     * Связь многие к одному с организацией
+     * Организация офиса
+     *
      * @see Organization
      */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -67,7 +68,8 @@ public class Office {
     private Organization organization;
 
     /**
-     * Связь один ко многим с пользователями
+     * Пользователи офиса
+     *
      * @see User
      */
     @OneToMany(mappedBy = "office")
@@ -82,10 +84,10 @@ public class Office {
     /**
      * Конструктор - создание объекта Office со следующими полями
      *
-     * @param name     - Название офиса
-     * @param address  - Адрес
-     * @param phone    - Телефон
-     * @param isActive - Активность
+     * @param name     Название офиса
+     * @param address  Адрес
+     * @param phone    Телефон
+     * @param isActive Активность
      */
     public Office(String name, String address, String phone, boolean isActive) {
         this.name = name;
@@ -94,9 +96,6 @@ public class Office {
         this.isActive = isActive;
     }
 
-    /**
-     * Геттеры и сеттеры для полей
-     */
     public Long getId() {
         return id;
     }
@@ -133,7 +132,7 @@ public class Office {
         this.phone = phone;
     }
 
-    public boolean isActive() {
+    public boolean getActive() {
         return isActive;
     }
 

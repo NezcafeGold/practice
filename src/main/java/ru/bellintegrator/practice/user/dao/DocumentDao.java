@@ -5,40 +5,40 @@ import ru.bellintegrator.practice.dictionary.doctype.model.DocType;
 import ru.bellintegrator.practice.user.model.Document;
 
 /**
- * DAO для работы с Document
+ * DAO для работы с документом
  */
 public interface DocumentDao {
 
     /**
-     * Сохранить Document
+     * Сохранить документ
      *
      * @param document
      */
     void saveDocument(Document document);
 
     /**
-     * Найти Document по id
+     * Найти документ по id
      *
      * @param id
      */
     Document getDocumentById(Long id);
 
     /**
-     * Вернуть DocType по id
+     * Вернуть тип документа по id
      *
      * @param id
      */
     DocType getDocTypeById(Long id);
 
     /**
-     * Вернуть Country по id
+     * Вернуть данные страны по id
      *
      * @param id
      */
     Country getCountryById(Long id);
 
     /**
-     * Обновить Document
+     * Обновить документ
      *
      * @param document
      */

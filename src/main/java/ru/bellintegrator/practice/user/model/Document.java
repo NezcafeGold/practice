@@ -69,7 +69,7 @@ public class Document {
      * @see Country
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "citizenship_id")
+    @JoinColumn(name = "citizenship_id", nullable = false)
     private Country country;
 
     /**

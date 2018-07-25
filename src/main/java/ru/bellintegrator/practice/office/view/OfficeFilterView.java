@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-@ApiModel(value = "Вид офиса для фильтра")
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@ApiModel(value = "Офис")
 public class OfficeFilterView {
 
     @ApiModelProperty(hidden = true, value = "Первичный ключ id")

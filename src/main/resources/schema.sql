@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS Document (
   doc_type_id    INTEGER NOT NULL,
   doc_number     VARCHAR(20),
   doc_date       VARCHAR(11),
-  citizenship_id INTEGER
+  citizenship_id INTEGER NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Country (

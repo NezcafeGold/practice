@@ -1,9 +1,10 @@
 package ru.bellintegrator.practice.user.view;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-@ApiModel(value = "Пользователь для фильтра")
+@ApiModel(value = "Пользователь")
 public class UserFilterView {
 
     @ApiModelProperty(hidden = true, value = "Первичный ключ id")

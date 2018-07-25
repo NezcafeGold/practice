@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-@ApiModel(value = "Вид организации после фильтра")
+@ApiModel(value = "Организация")
 public class OrganizationFilterView {
 
     @ApiModelProperty(hidden = true, value = "Первичный ключ id")
@@ -27,9 +26,6 @@ public class OrganizationFilterView {
     @ApiModelProperty(value = "Переопределенный toString()")
     @Override
     public String toString() {
-        return "{id:" + id +
-                ";name:" + name +
-                ";isActive:" + isActive +
-                "}";
+        return "{id:" + id + ";name:" + name + ";isActive:" + isActive + "}";
     }
 }

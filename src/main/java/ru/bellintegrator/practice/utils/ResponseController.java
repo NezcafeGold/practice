@@ -40,7 +40,7 @@ public class ResponseController implements ResponseBodyAdvice<Object> {
             }
         } else {
             ErrorView errorView = new ErrorView(errorName);
-            return new WrapperObj<Object>(errorView);
+            return errorView;
         }
         return new WrapperObj<Object>(o);
     }

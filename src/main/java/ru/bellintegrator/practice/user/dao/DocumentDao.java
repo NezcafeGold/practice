@@ -17,27 +17,6 @@ public interface DocumentDao {
     void saveDocument(Document document);
 
     /**
-     * Найти документ по id
-     *
-     * @param id
-     */
-    Document getDocumentById(Long id);
-
-    /**
-     * Вернуть тип документа по id
-     *
-     * @param id
-     */
-    DocType getDocTypeById(Long id);
-
-    /**
-     * Вернуть данные страны по id
-     *
-     * @param id
-     */
-    Country getCountryById(Long id);
-
-    /**
      * Обновить документ
      *
      * @param document

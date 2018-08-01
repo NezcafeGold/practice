@@ -56,7 +56,7 @@ public class Office {
      * Активность
      */
     @Column(name = "is_active")
-    private boolean isActive;
+    private Boolean isActive;
 
     /**
      * Организация офиса
@@ -96,8 +96,29 @@ public class Office {
         this.isActive = isActive;
     }
 
+    /**
+     * Конструктор - создание объекта Office со следующими полями
+     *
+     * @param id       Ид офиса
+     * @param name     Название офиса
+     * @param address  Адрес
+     * @param phone    Телефон
+     * @param isActive Активность
+     */
+    public Office(Long id, String name, String address, String phone, boolean isActive) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.phone = phone;
+        this.isActive = isActive;
+    }
+
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Integer getVersion() {
@@ -132,11 +153,11 @@ public class Office {
         this.phone = phone;
     }
 
-    public boolean getActive() {
+    public Boolean getIsActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(Boolean active) {
         isActive = active;
     }
 

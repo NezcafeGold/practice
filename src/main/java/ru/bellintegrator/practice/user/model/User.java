@@ -3,6 +3,7 @@ package ru.bellintegrator.practice.user.model;
 
 import ru.bellintegrator.practice.office.model.Office;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Version;
-import java.util.Date;
 
 /**
  * Пользователь
@@ -25,7 +25,7 @@ public class User {
      */
     @Id
     @GeneratedValue
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private Long id;
 
     /**
@@ -84,7 +84,7 @@ public class User {
      *
      * @see Document
      */
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
     private Document document;
 
     /**
@@ -96,6 +96,7 @@ public class User {
     /**
      * Конструктор - создание объекта User со следующими полями
      *
+     * @param id           Ид
      * @param firstName    Имя
      * @param secondName   Фамилия
      * @param middleName   Отчество
@@ -103,14 +104,14 @@ public class User {
      * @param phone        Телефон
      * @param isIdentified Идентификация
      */
-    public User(String firstName, String secondName, String middleName, String position, String phone, boolean isIdentified) {
+    public User(Long id, String firstName, String secondName, String middleName, String position, String phone, Boolean isIdentified) {
+        this.id = id;
         this.firstName = firstName;
         this.secondName = secondName;
         this.middleName = middleName;
         this.position = position;
         this.phone = phone;
         this.isIdentified = isIdentified;
-        this.office = office;
     }
 
     public Long getId() {
@@ -157,11 +158,11 @@ public class User {
         this.phone = phone;
     }
 
-    public boolean getIdentified() {
+    public Boolean getIsIdentified() {
         return isIdentified;
     }
 
-    public void setIdentified(boolean identified) {
+    public void setIsIdentified(Boolean identified) {
         isIdentified = identified;
     }
 
@@ -171,5 +172,13 @@ public class User {
 
     public void setOffice(Office office) {
         this.office = office;
+    }
+
+    public Document getDocument() {
+        return document;
+    }
+
+    public void setDocument(Document document) {
+        this.document = document;
     }
 }

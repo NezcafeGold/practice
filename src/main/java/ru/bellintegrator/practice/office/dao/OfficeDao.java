@@ -25,6 +25,14 @@ public interface OfficeDao {
     Office getOfficeById(Long id);
 
     /**
+     * Найти офис по имени
+     *
+     * @param name
+     */
+    Office getOfficeByName(String name);
+
+
+    /**
      * Обновить данные офиса
      *
      * @param office

@@ -1,6 +1,5 @@
 package ru.bellintegrator.practice.user.service;
 
-import ma.glasnost.orika.BoundMapperFacade;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
@@ -16,7 +15,6 @@ import ru.bellintegrator.practice.user.dao.DocumentDao;
 import ru.bellintegrator.practice.user.dao.UserDao;
 import ru.bellintegrator.practice.user.model.Document;
 import ru.bellintegrator.practice.user.model.User;
-import ru.bellintegrator.practice.user.view.UserFilterView;
 import ru.bellintegrator.practice.user.view.UserView;
 
 import java.util.ArrayList;
@@ -35,7 +33,6 @@ public class UserServiceImpl implements UserService {
     private final DocumentDao documentDao;
     private MapperFactory mapperFactory;
 
-
     @Autowired
     public UserServiceImpl(UserDao userDao, DocTypeDao docTypeDao, CountryDao countryDao, DocumentDao documentDao) {
         this.userDao = userDao;
@@ -48,17 +45,24 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    @Transactional
-    public List<UserFilterView> filterUser(UserView userView) {
+    @Transactional(readOnly = true)
+    public List<UserView> filterUser(UserView userView) {
+        if (userView.officeId == null) {
+            throw new ServiceException("Не введен обязательный параметр officeId");
+        }
         List<User> users = userDao.filterUser(userView);
-        List<UserFilterView> filterList = new ArrayList<>();
+        List<UserView> filterList = new ArrayList<>();
+        mapperFactory = new DefaultMapperFactory.Builder().build();
         for (int i = 0; i < users.size(); i++) {
-            UserFilterView userFilterView = new UserFilterView();
-            userFilterView.id = users.get(i).getId();
-            userFilterView.firstName = users.get(i).getFirstName();
-            userFilterView.secondName = users.get(i).getSecondName();
-            userFilterView.middleName = users.get(i).getMiddleName();
-            userFilterView.position = users.get(i).getPosition();
+            UserView userFilterView = new UserView();
+            mapperFactory.classMap(User.class, UserView.class)
+                    .field("id", "id")
+                    .field("firstName", "firstName")
+                    .field("secondName", "secondName")
+                    .field("middleName", "middleName")
+                    .field("position", "position").register();
+            MapperFacade mapper = mapperFactory.getMapperFacade();
+            mapper.map(users.get(i), userFilterView);
             filterList.add(userFilterView);
         }
         return filterList;
@@ -68,37 +72,63 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public UserView getUserById(Long id) {
         User user = userDao.getUserById(id);
-        Document document = documentDao.getDocumentById(id);
-        DocType docType = documentDao.getDocTypeById(id);
-        Country country = documentDao.getCountryById(id);
+        Document document = user.getDocument();
+
+        DocType docType = document.getDocType();
+        Country country = document.getCountry();
+
         if (user == null) {
             throw new ServiceException("Пользователь " + id + " не найден");
         }
         if (document == null) {
             throw new ServiceException("Документ " + id + " не найден");
         }
-        if (docType == null) {
-            throw new ServiceException("Тип документа " + id + " не найден");
-        }
-        if (country == null) {
-            throw new ServiceException("Тип страны " + id + " не найден");
-        }
         UserView userView = new UserView();
-        userView.id = user.getId();
-        userView.firstName = user.getFirstName();
-        userView.secondName = user.getSecondName();
-        userView.middleName = user.getMiddleName();
-        userView.position = user.getPosition();
-        userView.phone = user.getPhone();
-        userView.docName = docType.getName();
-        userView.docNumber = document.getDocNumber();
-        userView.docDate = document.getDocDate();
-        userView.citizenshipName = country.getName();
-        userView.citizenshipCode = country.getCode();
-        userView.isIdentified = user.getIdentified();
+        mapperFactory = new DefaultMapperFactory.Builder().build();
+        mapperFactory.classMap(User.class, UserView.class)
+                .mapNulls(false)
+                .field("id", "id")
+                .field("firstName", "firstName")
+                .field("secondName", "secondName")
+                .field("middleName", "middleName")
+                .field("position", "position")
+                .field("phone", "phone")
+                .field("isIdentified", "isIdentified")
+                .byDefault()
+                .register();
+        MapperFacade mapper = mapperFactory.getMapperFacade();
+        mapper.map(user, userView);
+        if (userView.id == null) {
+            userView.id = user.getId();
+        }
+
+        if (docType != null) {
+            mapperFactory = new DefaultMapperFactory.Builder().build();
+            mapperFactory.classMap(DocType.class, UserView.class)
+                    .field("name", "docName").register();
+            mapper = mapperFactory.getMapperFacade();
+            mapper.map(docType, userView);
+        }
+        if (country != null) {
+            mapperFactory = new DefaultMapperFactory.Builder().build();
+            mapperFactory.classMap(Country.class, UserView.class)
+                    .field("name", "citizenshipName")
+                    .field("code", "citizenshipCode")
+                    .register();
+            mapper = mapperFactory.getMapperFacade();
+            mapper.map(country, userView);
+        }
+        mapperFactory = new DefaultMapperFactory.Builder().build();
+        mapperFactory.classMap(Document.class, UserView.class)
+                .field("docNumber", "docNumber")
+                .field("docDate", "docDate")
+                .register();
+        mapper = mapperFactory.getMapperFacade();
+        mapper.map(document, userView);
+
         return userView;
     }
 
@@ -108,6 +138,15 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void updateUser(UserView userView) {
+        if (userView.id == null) {
+            throw new ServiceException("Не введен обязательный параметр id");
+        }
+        if (userView.firstName == null) {
+            throw new ServiceException("Не введен обязательный параметр firstName");
+        }
+        if (userView.position == null) {
+            throw new ServiceException("Не введен обязательный параметр position");
+        }
         Long id = userView.id;
         User user = userDao.getUserById(id);
         if (user == null) {
@@ -117,42 +156,49 @@ public class UserServiceImpl implements UserService {
         DocType docType = null;
         String docName = userView.docName;
         if (docName != null) {
-            List<DocType> docTypes = docTypeDao.getAllDocTypes();
-            for (DocType dt : docTypes) {
-                if (dt.getName().equals(docName)) {
-                    docType = dt;
-                }
-            }
+            docType = docTypeDao.getDocTypeByName(docName);
         }
 
         Country country = null;
         String citizenshipCode = userView.citizenshipCode;
         if (citizenshipCode != null) {
-            List<Country> countries = countryDao.getAllCountries();
-            for (Country c : countries) {
-                if (c.getCode().equals(citizenshipCode)) {
-                    country = c;
-                }
-            }
+            country = countryDao.getCountryByCode(citizenshipCode);
         }
 
-        Document document = documentDao.getDocumentById(id);
+        Document document = user.getDocument();
         if (document == null) {
             throw new ServiceException("Документ " + id + " не найден");
         }
 
-        user.setFirstName(userView.firstName);
-        user.setSecondName(userView.secondName);
-        user.setMiddleName(userView.middleName);
-        user.setPhone(userView.phone);
-        user.setPosition(userView.position);
-        user.setIdentified(userView.isIdentified);
-        document.setDocNumber(userView.docNumber);
-        document.setDocDate(userView.docDate);
-        document.setUser(user);
-        document.setDocType(docType);
-        document.setCountry(country);
+        mapperFactory = new DefaultMapperFactory.Builder().build();
+        mapperFactory.classMap(UserView.class, User.class)
+                .mapNulls(false)
+                .field("firstName", "firstName")
+                .field("secondName", "secondName")
+                .field("middleName", "middleName")
+                .field("position", "position")
+                .field("phone", "phone")
+                .field("isIdentified", "isIdentified")
+                .register();
+        MapperFacade mapper = mapperFactory.getMapperFacade();
+        mapper.map(userView, user);
 
+        mapperFactory = new DefaultMapperFactory.Builder().build();
+        mapperFactory.classMap(UserView.class, Document.class)
+                .mapNulls(false)
+                .field("docNumber", "docNumber")
+                .field("docDate", "docDate")
+                .register();
+        mapper = mapperFactory.getMapperFacade();
+        mapper.map(userView, document);
+
+        user.setDocument(document);
+        if (docType != null) {
+            document.setDocType(docType);
+        }
+        if (country != null) {
+            document.setCountry(country);
+        }
         userDao.updateUser(user);
         documentDao.updateDocument(document);
     }
@@ -163,35 +209,64 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void saveUser(UserView userView) {
+        User user = new User();
+        if (userView.firstName == null) {
+            throw new ServiceException("Не введен обязательный параметр firstName");
+        }
+        if (userView.position == null) {
+            throw new ServiceException("Не введен обязательный параметр position");
+        }
+
         mapperFactory = new DefaultMapperFactory.Builder().build();
-        BoundMapperFacade boundMapper = mapperFactory.getMapperFacade(UserView.class, User.class);
-        User user = (User) boundMapper.map(userView);
+        mapperFactory.classMap(UserView.class, User.class)
+                .mapNulls(false)
+                .field("firstName", "firstName")
+                .field("position", "position")
+                .mapNulls(true)
+                .field("secondName", "secondName")
+                .field("middleName", "middleName")
+                .field("phone", "phone")
+                .field("isIdentified", "isIdentified")
+                .byDefault()
+                .register();
+        MapperFacade mapper = mapperFactory.getMapperFacade();
+        mapper.map(userView, user);
 
         DocType docType = null;
         String docName = userView.docName;
         if (docName != null) {
-            List<DocType> docTypes = docTypeDao.getAllDocTypes();
-            for (DocType dt : docTypes) {
-                if (dt.getName().equals(docName)) {
-                    docType = dt;
-                }
-            }
+            docType = docTypeDao.getDocTypeByName(docName);
         }
 
         Country country = null;
         String citizenshipCode = userView.citizenshipCode;
         if (citizenshipCode != null) {
-            List<Country> countries = countryDao.getAllCountries();
-            for (Country c : countries) {
-                if (c.getCode().equals(citizenshipCode)) {
-                    country = c;
-                }
-            }
+            country = countryDao.getCountryByCode(citizenshipCode);
         }
 
-        Document document = new Document(userView.docNumber, userView.docDate, user, docType, country);
+        String docNumber = userView.docNumber;
+        String docDate = userView.docDate;
+        Document document = new Document();
+        if (docNumber != null || docDate != null) {
+            mapperFactory = new DefaultMapperFactory.Builder().build();
+            mapperFactory.classMap(UserView.class, Document.class)
+                    .field("docNumber", "docNumber")
+                    .field("docDate", "docDate")
+                    .register();
+            mapper = mapperFactory.getMapperFacade();
+            mapper.map(userView, document);
+        }
 
-        userDao.saveUser(user);
+        if (country != null) {
+            document.setCountry(country);
+        }
+        if (docType != null) {
+            document.setDocType(docType);
+        }
+
+        user.setDocument(document);
+
         documentDao.saveDocument(document);
+        userDao.saveUser(user);
     }
 }

@@ -38,4 +38,11 @@ public interface UserDao {
      * @param id
      */
     User getUserById(Long id);
+
+    /**
+     * Вернуть пользователя по имени
+     *
+     * @param name
+     */
+    User getUserByName(String name);
 }

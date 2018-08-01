@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.bellintegrator.practice.office.model.Office;
 import ru.bellintegrator.practice.office.service.OfficeService;
-import ru.bellintegrator.practice.office.view.OfficeFilterView;
 import ru.bellintegrator.practice.office.view.OfficeView;
 
 import java.util.List;
@@ -34,7 +32,7 @@ public class OfficeController {
 
     @ApiOperation(value = "Принимает данные и возвращает отфильтрованный список офисов", nickname = "filterOffice", httpMethod = "POST")
     @PostMapping(value = "/office/list")
-    public List<OfficeFilterView> filterOffice(@RequestBody OfficeView office) {
+    public List<OfficeView> filterOffice(@RequestBody OfficeView office) {
         return officeService.filterOffice(office);
     }
 

@@ -3,17 +3,19 @@ package ru.bellintegrator.practice.user.model;
 import ru.bellintegrator.practice.dictionary.country.model.Country;
 import ru.bellintegrator.practice.dictionary.doctype.model.DocType;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Version;
-import java.util.Date;
 
 /**
  * Документ
@@ -39,18 +41,18 @@ public class Document {
      * Номер документа
      */
     @Column(name = "doc_number", length = 20)
-    private Long docNumber;
+    private String docNumber;
 
     /**
      * Дата выдачи документа
      */
     @Column(name = "doc_date", length = 11)
-    private Date docDate;
+    private String docDate;
 
     /**
      * Пользователь документа
      */
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private User user;
 
@@ -60,7 +62,7 @@ public class Document {
      * @see DocType
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "doc_type_id", nullable = false)
+    @JoinColumn(name = "doc_type_id")
     private DocType docType;
 
     /**
@@ -69,7 +71,7 @@ public class Document {
      * @see Country
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "citizenship_id", nullable = false)
+    @JoinColumn(name = "citizenship_id")
     private Country country;
 
     /**
@@ -83,31 +85,29 @@ public class Document {
      *
      * @param docNumber Номер документа
      * @param docDate   Дата регистрации документа
-     * @param user      Пользователь документа
      * @param docType   Тип документа
      * @param country   Страна проживания
      */
-    public Document(Long docNumber, Date docDate, User user, DocType docType, Country country) {
+    public Document(String docNumber, String docDate, DocType docType, Country country) {
         this.docNumber = docNumber;
         this.docDate = docDate;
-        this.user = user;
         this.docType = docType;
         this.country = country;
     }
 
-    public Long getDocNumber() {
+    public String getDocNumber() {
         return docNumber;
     }
 
-    public void setDocNumber(Long docNumber) {
+    public void setDocNumber(String docNumber) {
         this.docNumber = docNumber;
     }
 
-    public Date getDocDate() {
+    public String getDocDate() {
         return docDate;
     }
 
-    public void setDocDate(Date docDate) {
+    public void setDocDate(String docDate) {
         this.docDate = docDate;
     }
 
@@ -133,5 +133,13 @@ public class Document {
 
     public void setCountry(Country country) {
         this.country = country;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

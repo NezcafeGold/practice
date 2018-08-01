@@ -11,14 +11,14 @@ import java.util.List;
 public interface CountryDao {
 
     /**
-     * Сохранить Country
+     * Найти Country по имени
      *
-     * @param country
+     * @param citizenshipCode
      */
-    void saveCountry(Country country);
+    Country getCountryByCode(String citizenshipCode);
 
     /**
-     * Вернуть список всех Country
+     * Вернуть все Country
      */
     List<Country> getAllCountries();
 }

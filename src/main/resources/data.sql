@@ -1,9 +1,9 @@
-INSERT INTO Organization (id, version, name, full_name, inn, kpp, address)
-VALUES (1, 0, 'Евросеть', 'ООО Евросеть-Ритейл', '3664069397', '773301001', 'ул. Пушкина, 49');
-INSERT INTO Organization (id, version, name, full_name, inn, kpp, address)
-VALUES (2, 0, 'DNS', 'ООО ДНС', '566401571', '644901001', 'ул. Достоевского, 42');
-INSERT INTO Organization (id, version, name, full_name, inn, kpp, address)
-VALUES (3, 0, 'МТС', 'ПАО МТС', '7869697158', '561501154', 'ул. Проспект Ленина, 121');
+INSERT INTO Organization (id, version, name, full_name, inn, kpp, address, is_active)
+VALUES (1, 0, 'Евросеть', 'ООО Евросеть-Ритейл', '3664069397', '773301001', 'ул. Пушкина, 49', true );
+INSERT INTO Organization (id, version, name, full_name, inn, kpp, address, is_active)
+VALUES (2, 0, 'DNS', 'ООО ДНС', '566401571', '644901001', 'ул. Достоевского, 42', true );
+INSERT INTO Organization (id, version, name, full_name, inn, kpp, address, is_active)
+VALUES (3, 0, 'МТС', 'ПАО МТС', '7869697158', '561501154', 'ул. Проспект Ленина, 121', true);
 
 INSERT INTO Office (id, version, name, address, phone, is_active, org_id)
 VALUES (1, 0, 'Центральный', 'ул. Пушкина, 49', '89275588796', true, 1);

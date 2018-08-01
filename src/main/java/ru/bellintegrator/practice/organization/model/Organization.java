@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Version;
@@ -71,7 +72,7 @@ public class Organization {
      * Активность
      */
     @Column(name = "is_active")
-    private boolean isActive;
+    private Boolean isActive;
 
     /**
      * Офисы организации
@@ -99,29 +100,8 @@ public class Organization {
      * @param phone    Телефон
      * @param isActive Активность
      */
-    public Organization(Long id, String name, String fullName, String inn, String kpp, String address, String phone, boolean isActive) {
+    public Organization(Long id, String name, String fullName, String inn, String kpp, String address, String phone, Boolean isActive) {
         this.id = id;
-        this.name = name;
-        this.fullName = fullName;
-        this.inn = inn;
-        this.kpp = kpp;
-        this.address = address;
-        this.phone = phone;
-        this.isActive = isActive;
-    }
-
-    /**
-     * Конструктор - создание объекта Organization со следующими полями
-     *
-     * @param name     Название организации
-     * @param fullName Полное название организации
-     * @param inn      ИНН
-     * @param kpp      КПП
-     * @param address  Адрес
-     * @param phone    Телефон
-     * @param isActive Активность
-     */
-    public Organization(String name, String fullName, String inn, String kpp, String address, String phone, Boolean isActive) {
         this.name = name;
         this.fullName = fullName;
         this.inn = inn;
@@ -183,15 +163,23 @@ public class Organization {
         this.phone = phone;
     }
 
-    public boolean getActive() {
+    public Boolean getIsActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
+    public void setIsActive(Boolean active) {
         isActive = active;
     }
 
     public Set<Office> getOffices() {
         return offices;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 }

@@ -37,4 +37,11 @@ public interface OrganizationDao {
      * @param organization
      */
     void save(Organization organization);
+
+    /**
+     * Найти организацию по имени
+     *
+     * @param name
+     */
+    Organization getOrganizationByName(String name);
 }

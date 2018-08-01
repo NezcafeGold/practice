@@ -10,22 +10,15 @@ import java.util.List;
 public interface DocTypeDao {
 
     /**
-     * Сохранить DocType
+     * Найти тип документа по имени
      *
-     * @param docType
+     * @param docName
      */
-    void saveDocType(DocType docType);
+    DocType getDocTypeByName(String docName);
 
     /**
-     * Найти DocType по id
+     * Найти все типы документов
      *
-     * @param id
-     */
-    DocType getDocTypeById(Long id);
-
-    /**
-     * Вернуть все типы документов
      */
     List<DocType> getAllDocTypes();
-
 }

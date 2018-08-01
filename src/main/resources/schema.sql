@@ -13,10 +13,10 @@ CREATE TABLE IF NOT EXISTS User (
 CREATE TABLE IF NOT EXISTS Document (
   id             INTEGER PRIMARY KEY AUTO_INCREMENT,
   version        INTEGER NOT NULL,
-  doc_type_id    INTEGER NOT NULL,
+  doc_type_id    INTEGER,
   doc_number     VARCHAR(20),
   doc_date       VARCHAR(11),
-  citizenship_id INTEGER NOT NULL
+  citizenship_id INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS Country (

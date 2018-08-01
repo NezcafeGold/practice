@@ -1,9 +1,12 @@
 package ru.bellintegrator.practice.user.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ru.bellintegrator.practice.dictionary.country.model.Country;
 import ru.bellintegrator.practice.dictionary.doctype.model.DocType;
 import ru.bellintegrator.practice.user.model.Document;
+
+import javax.persistence.EntityManager;
 
 /**
  * {@inheritDoc}
@@ -11,36 +14,19 @@ import ru.bellintegrator.practice.user.model.Document;
 @Repository
 public class DocumentDaoImpl implements DocumentDao {
 
+    @Autowired
+    private final EntityManager em;
+
+    public DocumentDaoImpl(EntityManager em) {
+        this.em = em;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void saveDocument(Document document) {
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Document getDocumentById(Long id) {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public DocType getDocTypeById(Long id) {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Country getCountryById(Long id) {
-        return null;
+     em.persist(document);
     }
 
     /**
@@ -48,6 +34,6 @@ public class DocumentDaoImpl implements DocumentDao {
      */
     @Override
     public void updateDocument(Document document) {
-
+        em.merge(document);
     }
 }

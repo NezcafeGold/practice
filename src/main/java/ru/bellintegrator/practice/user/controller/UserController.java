@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.bellintegrator.practice.user.service.UserService;
-import ru.bellintegrator.practice.user.view.UserFilterView;
 import ru.bellintegrator.practice.user.view.UserView;
 
 import java.util.List;
@@ -34,7 +33,7 @@ public class UserController {
     @ApiOperation(value = "Принимает данные и возвращает отфильтрованный список пользователей",
             nickname = "filterUser", httpMethod = "POST")
     @PostMapping(value = "/user/list")
-    public List<UserFilterView> filterUser(@RequestBody UserView user) {
+    public List<UserView> filterUser(@RequestBody UserView user) {
         return userService.filterUser(user);
     }
 
@@ -52,7 +51,7 @@ public class UserController {
 
     @ApiOperation(value = "Сохраненяет данные пользователя", nickname = "saveUser", httpMethod = "POST")
     @PostMapping(value = "/user/save")
-    public void saveOffice(@RequestBody UserView user) {
+    public void saveUser(@RequestBody UserView user) {
         userService.saveUser(user);
     }
 

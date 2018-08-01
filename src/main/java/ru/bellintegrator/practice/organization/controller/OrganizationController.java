@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.bellintegrator.practice.organization.model.Organization;
 import ru.bellintegrator.practice.organization.service.OrganizationService;
-import ru.bellintegrator.practice.organization.view.OrganizationFilterView;
 import ru.bellintegrator.practice.organization.view.OrganizationView;
 
 
@@ -35,7 +33,7 @@ public class OrganizationController {
 
     @ApiOperation(value = "Принимает данные и возвращает отфильтрованный список организаций", nickname = "filterOrganization", httpMethod = "POST")
     @PostMapping(value = "/organization/list")
-    public List<OrganizationFilterView> filterOrganization(@RequestBody OrganizationView organization) {
+    public List<OrganizationView> filterOrganization(@RequestBody OrganizationView organization) {
         return organizationService.filterOrganization(organization);
     }
 

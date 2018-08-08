@@ -17,6 +17,9 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**
+ * Тест для проверки ДАО пользователя
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration(value = "src/main/resources")
@@ -29,6 +32,9 @@ public class UserDaoImplTest {
     @Autowired
     DocumentDao documentDao;
 
+    /**
+     * Тест для проверки фильтра пользователя
+     */
     @Test
     public void filterUser() {
         List<User> userList;
@@ -57,6 +63,9 @@ public class UserDaoImplTest {
         Assert.assertEquals(expectedUsers, userList.size());
     }
 
+    /**
+     * Тест для проверки обновления пользователя
+     */
     @Test
     public void updateUser() {
         Long id = 1L;
@@ -69,6 +78,9 @@ public class UserDaoImplTest {
         Assert.assertEquals(user, actualUser);
     }
 
+    /**
+     * Тест для проверки сохранения пользователя
+     */
     @Test
     public void saveUser() {
         String firstName = "Дмитрий";
@@ -86,6 +98,9 @@ public class UserDaoImplTest {
         Assert.assertEquals(user, actualUser);
     }
 
+    /**
+     * Тест для проверки возвращения пользователя по id
+     */
     @Test
     public void getUserById() {
         Long id = 1L;

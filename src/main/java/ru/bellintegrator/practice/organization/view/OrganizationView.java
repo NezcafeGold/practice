@@ -14,18 +14,23 @@ public class OrganizationView {
     public String name;
 
     @ApiModelProperty(value = "Полное название организации")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public String fullName;
 
     @ApiModelProperty(value = "ИНН")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public String inn;
 
     @ApiModelProperty(value = "КПП")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public String kpp;
 
     @ApiModelProperty(value = "Адрес")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public String address;
 
     @ApiModelProperty(value = "Телефон")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public String phone;
 
     @ApiModelProperty(value = "Активность")

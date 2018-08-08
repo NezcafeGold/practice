@@ -21,10 +21,11 @@ public class DocTypeServiceImpl implements DocTypeService {
 
     @Autowired
     private final DocTypeDao docTypeDao;
-    private MapperFactory mapperFactory;
+    private DocTypeMapper docTypeMapper;
 
     public DocTypeServiceImpl(DocTypeDao docTypeDao) {
         this.docTypeDao = docTypeDao;
+        docTypeMapper = new DocTypeMapper();
     }
 
     /**
@@ -33,20 +34,8 @@ public class DocTypeServiceImpl implements DocTypeService {
     @Override
     @Transactional
     public List<DocTypeView> getDocTypes() {
-        List<DocTypeView> docTypeViewList = new ArrayList<>();
         List<DocType> docTypeList = docTypeDao.getAllDocTypes();
-
-        mapperFactory = new DefaultMapperFactory.Builder().build();
-        for (int i = 0; i < docTypeList.size(); i++) {
-            mapperFactory.classMap(DocType.class, DocTypeView.class)
-                    .field("name", "name")
-                    .field("code", "code")
-                    .byDefault()
-                    .register();
-            MapperFacade mapper = mapperFactory.getMapperFacade();
-            DocTypeView docTypeView = mapper.map(docTypeList.get(i), DocTypeView.class);
-            docTypeViewList.add(docTypeView);
-        }
+        List<DocTypeView> docTypeViewList = docTypeMapper.mapToDocTypeView(docTypeList);
         return docTypeViewList;
     }
 }

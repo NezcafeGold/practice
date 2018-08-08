@@ -14,6 +14,9 @@ import ru.bellintegrator.practice.dictionary.country.view.CountryView;
 
 import java.util.List;
 
+/**
+ * Тест ДАО
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration(value = "src/main/resources")
@@ -22,6 +25,9 @@ public class CountryDaoImplTest {
     @Autowired
     CountryDao countryDao;
 
+    /**
+     * Тест для проверки возвращения страны по коду
+     */
     @Test
     public void getCountryByCode() {
         String code = "643";
@@ -34,6 +40,9 @@ public class CountryDaoImplTest {
         Assert.assertEquals(expectedCode, country.getCode());
     }
 
+    /**
+     * Тест для проверки возвращения всех стран
+     */
     @Test
     public void getAllCountries() {
         List<Country> countryList = countryDao.getAllCountries();

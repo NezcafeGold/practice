@@ -17,6 +17,9 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**
+ * Тест для проверки ДАО
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration(value = "src/main/resources")
@@ -26,6 +29,9 @@ public class OrganizationDaoImplTest {
     @Autowired
     OrganizationDao organizationDao;
 
+    /**
+     * Тест для проверки фильтра организации
+     */
     @Test
     public void list() {
         List<Organization> organizations;
@@ -52,6 +58,9 @@ public class OrganizationDaoImplTest {
         Assert.assertEquals(expectedOffices, organizations.size());
     }
 
+    /**
+     * Тест для проверки возвращения организации по id
+     */
     @Test
     public void getOrganizationById() {
         Long id = 3L;
@@ -61,6 +70,9 @@ public class OrganizationDaoImplTest {
         Assert.assertEquals(expectedName, organization.getName());
     }
 
+    /**
+     * Тест для проверки обновления организации
+     */
     @Test
     public void update() {
         Long id = 1L;
@@ -75,6 +87,9 @@ public class OrganizationDaoImplTest {
         Assert.assertEquals(expectedOrganization, actualOrganization);
     }
 
+    /**
+     * Тест для проверки сохранения организации
+     */
     @Test
     public void save() {
         Organization expectedOrganization = new Organization();

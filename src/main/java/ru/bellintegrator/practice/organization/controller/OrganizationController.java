@@ -3,6 +3,7 @@ package ru.bellintegrator.practice.organization.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,25 +35,25 @@ public class OrganizationController {
     @ApiOperation(value = "Принимает данные и возвращает отфильтрованный список организаций", nickname = "filterOrganization", httpMethod = "POST")
     @PostMapping(value = "/organization/list")
     public List<OrganizationView> filterOrganization(@RequestBody OrganizationView organization) {
-        return organizationService.filterOrganization(organization);
+            return organizationService.filterOrganization(organization);
     }
 
     @ApiOperation(value = "Возвращает организацию по id", nickname = "getOrganizationById", httpMethod = "GET")
     @GetMapping(value = "/organization/{id}")
     public OrganizationView getOrganizationById(@PathVariable Long id) {
-        return organizationService.getOrganizationById(id);
+            return organizationService.getOrganizationById(id);
     }
 
     @ApiOperation(value = "Обновляет данные организации", nickname = "updateOrganization", httpMethod = "POST")
     @PostMapping(value = "/organization/update")
     public void updateOrganization(@RequestBody OrganizationView organization) {
-        organizationService.updateOrganization(organization);
+            organizationService.updateOrganization(organization);
     }
 
     @ApiOperation(value = "Сохраненяет данные организации", nickname = "saveOrganization", httpMethod = "POST")
     @PostMapping(value = "/organization/save")
     public void saveOrganization(@RequestBody OrganizationView organization) {
-        organizationService.saveOrganization(organization);
+            organizationService.saveOrganization(organization);
     }
 
 }

@@ -21,11 +21,12 @@ import java.util.List;
 public class OrganizationServiceImpl implements OrganizationService {
 
     private final OrganizationDao orgDao;
-    private MapperFactory mapperFactory;
+    private OrganizationMapper organizationMapper;
 
     @Autowired
     public OrganizationServiceImpl(OrganizationDao orgDao) {
         this.orgDao = orgDao;
+        organizationMapper = new OrganizationMapper();
     }
 
     /**
@@ -38,22 +39,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             throw new ServiceException("Не введен обязательный параметр name");
         }
         List<Organization> organizations = orgDao.list(organizationView);
-        List<OrganizationView> orgOutList = new ArrayList<>();
-        for (int i = 0; i < organizations.size(); i++) {
-            OrganizationView filterView = new OrganizationView();
-            mapperFactory = new DefaultMapperFactory.Builder().build();
-            mapperFactory.classMap(Organization.class, OrganizationView.class)
-                    .field("id", "id")
-                    .field("name", "name")
-                    .field("isActive", "isActive")
-                    .register();
-            MapperFacade mapper = mapperFactory.getMapperFacade();
-            mapper.map(organizations.get(i), filterView);
-            if (filterView.id == null) {
-                filterView.id = organizations.get(i).getId();
-            }
-            orgOutList.add(filterView);
-        }
+        List<OrganizationView> orgOutList = organizationMapper.mapToOrgViewList(organizations);
         return orgOutList;
     }
 
@@ -67,21 +53,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         if (organization == null) {
             throw new ServiceException("Организация с id " + id + " не найдена");
         }
-        OrganizationView orgView = new OrganizationView();
-        mapperFactory = new DefaultMapperFactory.Builder().build();
-        mapperFactory.classMap(Organization.class, OrganizationView.class)
-                .mapNulls(false)
-                .field("id", "id")
-                .field("name", "name")
-                .field("fullName", "fullName")
-                .field("inn", "inn")
-                .field("kpp", "kpp")
-                .field("address", "address")
-                .field("phone", "phone")
-                .field("isActive", "isActive")
-                .register();
-        MapperFacade mapper = mapperFactory.getMapperFacade();
-        mapper.map(organization, orgView);
+        OrganizationView orgView = organizationMapper.mapOrgToOrgView(organization);
         return orgView;
     }
 
@@ -91,7 +63,6 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     @Transactional
     public void updateOrganization(OrganizationView organizationView) {
-
         if (organizationView.id == null) {
             throw new ServiceException("Не введен обязательный параметр id");
         }
@@ -116,23 +87,8 @@ public class OrganizationServiceImpl implements OrganizationService {
         if (organization == null) {
             throw new ServiceException("Организация " + id + " не найдена");
         }
-
-        mapperFactory = new DefaultMapperFactory.Builder().build();
-        mapperFactory.classMap(OrganizationView.class, Organization.class)
-                .field("name", "name")
-                .field("fullName", "fullName")
-                .field("inn", "inn")
-                .field("kpp", "kpp")
-                .field("address", "address")
-                .mapNulls(false)
-                .field("phone", "phone")
-                .field("isActive", "isActive")
-                .byDefault()
-                .register();
-        MapperFacade mapper = mapperFactory.getMapperFacade();
-        mapper.map(organizationView, organization);
-
-        orgDao.update(organization);
+        Organization organizationToUpdate = organizationMapper.mapOrgViewToOrgUpdate(organizationView, organization);
+        orgDao.update(organizationToUpdate);
     }
 
     /**
@@ -158,21 +114,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             throw new ServiceException("Не введен обязательный параметр address");
         }
 
-        Organization organization = new Organization();
-        mapperFactory = new DefaultMapperFactory.Builder().build();
-        mapperFactory.classMap(OrganizationView.class, Organization.class)
-                .field("name", "name")
-                .field("fullName", "fullName")
-                .field("inn", "inn")
-                .field("kpp", "kpp")
-                .field("address", "address")
-                .mapNulls(false)
-                .field("phone", "phone")
-                .field("isActive", "isActive")
-                .register();
-        MapperFacade mapper = mapperFactory.getMapperFacade();
-        mapper.map(organizationView, organization);
-
-        orgDao.save(organization);
+        Organization organizationToSave = organizationMapper.mapOrgViewToOrgSave(organizationView);
+        orgDao.save(organizationToSave);
     }
 }

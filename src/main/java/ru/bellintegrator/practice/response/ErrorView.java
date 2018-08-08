@@ -1,12 +1,13 @@
-package ru.bellintegrator.practice.utils;
+package ru.bellintegrator.practice.response;
 
 public class ErrorView {
-    public String error;
+    public final String error;
 
     public ErrorView(String error) {
         this.error = error;
     }
 
     public ErrorView() {
+        error = null;
     }
 }

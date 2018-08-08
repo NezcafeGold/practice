@@ -3,6 +3,7 @@ package ru.bellintegrator.practice.user.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,25 +35,25 @@ public class UserController {
             nickname = "filterUser", httpMethod = "POST")
     @PostMapping(value = "/user/list")
     public List<UserView> filterUser(@RequestBody UserView user) {
-        return userService.filterUser(user);
+            return userService.filterUser(user);
     }
 
     @ApiOperation(value = "Возвращает пользователя по id", nickname = "getUserById", httpMethod = "GET")
     @GetMapping(value = "/user/{id}")
     public UserView getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+            return userService.getUserById(id);
     }
 
     @ApiOperation(value = "Обновляет данные пользователя", nickname = "updateUser", httpMethod = "POST")
     @PostMapping(value = "/user/update")
     public void updateUser(@RequestBody UserView user) {
-        userService.updateUser(user);
+            userService.updateUser(user);
     }
 
     @ApiOperation(value = "Сохраненяет данные пользователя", nickname = "saveUser", httpMethod = "POST")
     @PostMapping(value = "/user/save")
     public void saveUser(@RequestBody UserView user) {
-        userService.saveUser(user);
+            userService.saveUser(user);
     }
 
 }

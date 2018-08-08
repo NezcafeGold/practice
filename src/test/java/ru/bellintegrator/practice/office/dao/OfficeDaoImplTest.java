@@ -1,6 +1,5 @@
 package ru.bellintegrator.practice.office.dao;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +15,9 @@ import ru.bellintegrator.practice.office.view.OfficeView;
 import java.util.List;
 
 
+/**
+ * Тест для проверки ДАО офиса
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration(value = "src/main/resources")
@@ -25,6 +27,10 @@ public class OfficeDaoImplTest {
     @Autowired
     OfficeDao officeDao;
 
+
+    /**
+     * Тест для проверки фильтра офисов
+     */
     @Test
     public void list() {
         List<Office> offices;
@@ -53,6 +59,9 @@ public class OfficeDaoImplTest {
         Assert.assertEquals(0, offices.size());
     }
 
+    /**
+     * Тест для возвращения офиса по id
+     */
     @Test
     public void getOfficeById() {
         Long id = 2L;
@@ -62,6 +71,9 @@ public class OfficeDaoImplTest {
         Assert.assertEquals(expectedName, office.getName());
     }
 
+    /**
+     * Тест для проверика обновления офиса
+     */
     @Test
     public void update() {
         Long id = 1L;
@@ -74,6 +86,9 @@ public class OfficeDaoImplTest {
         Assert.assertEquals(expectedOffice, actualOffice);
     }
 
+    /**
+     * Тест для проверика сохранения офиса
+     */
     @Test
     public void save() {
         Office office = new Office("Имя", "Адрес", "5555", true);

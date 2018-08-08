@@ -20,12 +20,13 @@ import java.util.List;
 @Service
 public class OfficeServiceImpl implements OfficeService {
 
-    private final OfficeDao officeDao;
-    private MapperFactory mapperFactory;
-
     @Autowired
+    private final OfficeDao officeDao;
+    private OfficeMapper officeMapper;
+
     public OfficeServiceImpl(OfficeDao officeDao) {
         this.officeDao = officeDao;
+        officeMapper = new OfficeMapper();
     }
 
     /**
@@ -38,24 +39,11 @@ public class OfficeServiceImpl implements OfficeService {
             throw new ServiceException("Не введен обязательный параметр orgId");
         }
         List<Office> offices = officeDao.list(officeView);
-        List<OfficeView> officeFilterViews = new ArrayList<>();
-
         if (offices == null) {
             throw new ServiceException("Офисы не найдены");
         }
-
-        mapperFactory = new DefaultMapperFactory.Builder().build();
-        for (int i = 0; i < offices.size(); i++) {
-            mapperFactory.classMap(Office.class, OfficeView.class)
-                    .field("id", "id")
-                    .field("name", "name")
-                    .field("isActive", "isActive")
-                    .register();
-            MapperFacade mapper = mapperFactory.getMapperFacade();
-            OfficeView officeFilter = mapper.map(offices.get(i), OfficeView.class);
-            officeFilterViews.add(officeFilter);
-        }
-        return officeFilterViews;
+        List<OfficeView> officeViewList = officeMapper.mapToOfficeViewList(offices);
+        return officeViewList;
     }
 
     /**
@@ -64,22 +52,11 @@ public class OfficeServiceImpl implements OfficeService {
     @Override
     @Transactional(readOnly = true)
     public OfficeView getOfficeById(Long id) {
-        mapperFactory = new DefaultMapperFactory.Builder().build();
-
         Office office = officeDao.getOfficeById(id);
         if (office == null) {
             throw new ServiceException("Офис " + id + " не найден");
         }
-        mapperFactory.classMap(Office.class, OfficeView.class)
-                .field("id", "id")
-                .field("name", "name")
-                .field("address", "address")
-                .field("phone", "phone")
-                .field("isActive", "isActive")
-                .byDefault()
-                .register();
-        MapperFacade mapper = mapperFactory.getMapperFacade();
-        OfficeView officeView = mapper.map(office, OfficeView.class);
+        OfficeView officeView = officeMapper.mapToOfficeView(office);
         return officeView;
     }
 
@@ -89,8 +66,6 @@ public class OfficeServiceImpl implements OfficeService {
     @Override
     @Transactional
     public void updateOffice(OfficeView officeView) {
-        mapperFactory = new DefaultMapperFactory.Builder().build();
-
         Long id = officeView.id;
         if (id == null) {
             throw new ServiceException("Не введен обязательный параметр id");
@@ -101,26 +76,12 @@ public class OfficeServiceImpl implements OfficeService {
         if (officeView.address == null) {
             throw new ServiceException("Не введен обязательный параметр address");
         }
-        if (officeView.isActive == null) {
-            throw new ServiceException("Не введен обязательный параметр isActive");
-        }
         Office office = officeDao.getOfficeById(id);
         if (office == null) {
             throw new ServiceException("Офис " + id + " не найден");
         }
-
-        mapperFactory.classMap(OfficeView.class, Office.class)
-                .field("id", "id")
-                .field("name", "name")
-                .field("address", "address")
-                .mapNulls(false)
-                .field("phone", "phone")
-                .field("isActive", "isActive")
-                .register();
-        MapperFacade mapper = mapperFactory.getMapperFacade();
-        mapper.map(officeView, office);
-
-        officeDao.update(office);
+        Office officeToUpdate = officeMapper.mapOfficeViewToOfficeUpdate(officeView, office);
+        officeDao.update(officeToUpdate);
     }
 
     /**
@@ -129,20 +90,7 @@ public class OfficeServiceImpl implements OfficeService {
     @Override
     @Transactional
     public void saveOffice(OfficeView officeView) {
-        mapperFactory = new DefaultMapperFactory.Builder().build();
-
-        Office office = new Office();
-        mapperFactory.classMap(OfficeView.class, Office.class)
-                .field("name", "name")
-                .field("address", "address")
-                .field("phone", "phone")
-                .field("isActive", "isActive")
-                .register();
-        MapperFacade mapper = mapperFactory.getMapperFacade();
-        mapper.map(officeView, office);
-
+        Office office = officeMapper.mapOfficeViewToOfficeSave(officeView);
         officeDao.save(office);
     }
-
-
 }

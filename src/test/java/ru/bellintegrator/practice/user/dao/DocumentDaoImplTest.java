@@ -14,6 +14,9 @@ import ru.bellintegrator.practice.user.model.User;
 
 import static org.junit.Assert.*;
 
+/**
+ * Тест для проверки ДАО документа
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration(value = "src/main/resources")
@@ -26,6 +29,9 @@ public class DocumentDaoImplTest {
     @Autowired
     UserDao userDao;
 
+    /**
+     * Тест для проверки сохранения документа
+     */
     @Test
     public void saveDocument() {
         Document document = new Document();
@@ -45,6 +51,9 @@ public class DocumentDaoImplTest {
         Assert.assertEquals(document, actualDocument);
     }
 
+    /**
+     * Тест для проверки обновления документа
+     */
     @Test
     public void updateDocument() {
         Long id = 1L;

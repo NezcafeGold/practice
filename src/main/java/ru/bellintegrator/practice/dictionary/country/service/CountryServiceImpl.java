@@ -21,10 +21,11 @@ public class CountryServiceImpl implements CountryService {
 
     @Autowired
     private final CountryDao countryDao;
-    private MapperFactory mapperFactory;
+    private CountryMapper countryMapper;
 
     public CountryServiceImpl(CountryDao countryDao) {
         this.countryDao = countryDao;
+        countryMapper = new CountryMapper();
     }
 
     /**
@@ -33,20 +34,8 @@ public class CountryServiceImpl implements CountryService {
     @Override
     @Transactional
     public List<CountryView> getCountries() {
-        List<CountryView> countryViewList = new ArrayList<>();
         List<Country> countryList = countryDao.getAllCountries();
-
-        mapperFactory = new DefaultMapperFactory.Builder().build();
-        for (int i = 0; i < countryList.size(); i++) {
-            mapperFactory.classMap(Country.class, CountryView.class)
-                    .field("name", "name")
-                    .field("code", "code")
-                    .byDefault()
-                    .register();
-            MapperFacade mapper = mapperFactory.getMapperFacade();
-            CountryView countryView = mapper.map(countryList.get(i), CountryView.class);
-            countryViewList.add(countryView);
-        }
+        List<CountryView> countryViewList = countryMapper.mapToCountryViewList(countryList);
         return countryViewList;
     }
 }

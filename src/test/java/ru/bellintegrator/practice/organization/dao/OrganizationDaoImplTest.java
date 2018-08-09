@@ -9,13 +9,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 import ru.bellintegrator.practice.Application;
-import ru.bellintegrator.practice.office.dao.OfficeDao;
 import ru.bellintegrator.practice.organization.model.Organization;
 import ru.bellintegrator.practice.organization.view.OrganizationView;
 
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * Тест для проверки ДАО
@@ -30,10 +27,10 @@ public class OrganizationDaoImplTest {
     OrganizationDao organizationDao;
 
     /**
-     * Тест для проверки фильтра организации
+     * Тест для проверки фильтра организации c полями, которые есть в базе данных
      */
     @Test
-    public void list() {
+    public void filterOrganizationWithAvailableFields() {
         List<Organization> organizations;
         OrganizationView organizationView = new OrganizationView();
         organizationView.name = "Евросеть";
@@ -42,22 +39,28 @@ public class OrganizationDaoImplTest {
         Assert.assertNotNull(organizations);
         Assert.assertEquals(expectedOffices, organizations.size());
 
-        OrganizationView organizationView2 = new OrganizationView();
-        organizationView2.name = "DNS";
-        organizationView2.inn = "566401571";
+        OrganizationView organizationViewTwoFileds = new OrganizationView();
+        organizationViewTwoFileds.name = "DNS";
+        organizationViewTwoFileds.inn = "566401571";
         expectedOffices = 1;
-        organizations = organizationDao.list(organizationView2);
+        organizations = organizationDao.list(organizationViewTwoFileds);
         Assert.assertNotNull(organizations);
-        Assert.assertEquals(expectedOffices, organizations.size());
-
-        OrganizationView organizationView3 = new OrganizationView();
-        organizationView3.name = "Какая-то организация";
-        organizationView3.phone = "8111";
-        expectedOffices = 0;
-        organizations = organizationDao.list(organizationView3);
         Assert.assertEquals(expectedOffices, organizations.size());
     }
 
+    /**
+     * Тест для проверки фильтра организации c полями, которых нет в базе данных
+     */
+    @Test
+    public void filterOrganizationWithNotAvailableFields() {
+        OrganizationView organizationView = new OrganizationView();
+        organizationView.name = "Какая-то организация";
+        organizationView.phone = "8111";
+        int expectedOffices = 0;
+        List<Organization> organizations = organizationDao.list(organizationView);
+        Assert.assertEquals(expectedOffices, organizations.size());
+        
+    }
     /**
      * Тест для проверки возвращения организации по id
      */

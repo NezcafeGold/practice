@@ -12,8 +12,6 @@ import ru.bellintegrator.practice.Application;
 import ru.bellintegrator.practice.user.model.Document;
 import ru.bellintegrator.practice.user.model.User;
 
-import static org.junit.Assert.*;
-
 /**
  * Тест для проверки ДАО документа
  */

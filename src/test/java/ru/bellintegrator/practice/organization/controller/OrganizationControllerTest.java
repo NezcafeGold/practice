@@ -17,8 +17,6 @@ import org.springframework.web.client.RestTemplate;
 import ru.bellintegrator.practice.Application;
 import ru.bellintegrator.practice.organization.view.OrganizationView;
 
-import static org.junit.Assert.*;
-
 /**
  * Тест для проверки контроллера организации
  */
@@ -39,66 +37,86 @@ public class OrganizationControllerTest {
      * Тест для проверки фильтра организации
      */
     @Test
-    public void filterOrganization() {
+    public void filterOrganizationSuccessResponse() {
         OrganizationView orgViewSuccess = new OrganizationView();
         orgViewSuccess.name = "Евросеть";
         HttpEntity<OrganizationView> entitySuccess = new HttpEntity(orgViewSuccess, headers);
-        ResponseEntity<String> responseSuccess = restTemplate.exchange(
+        ResponseEntity<OrganizationView[]> responseSuccess = restTemplate.exchange(
                 createURL("/organization/list"),
-                HttpMethod.POST, entitySuccess, String.class);
-        String expectedValue = "{\"data\":[{\"id\":1,\"name\":\"Евросеть\",\"isActive\":true}]}";
+                HttpMethod.POST, entitySuccess, OrganizationView[].class);
+        OrganizationView expectedValue = createOrgViewForFilter();
         Assert.assertEquals("200", responseSuccess.getStatusCode().toString());
-        Assert.assertEquals(expectedValue, responseSuccess.getBody());
+        Assert.assertEquals(String.valueOf(expectedValue), String.valueOf(responseSuccess.getBody()[0]));
 
-        OrganizationView orgViewNotFound = new OrganizationView();
-        HttpEntity<OrganizationView> entityNotFound = new HttpEntity(orgViewNotFound, headers);
-        try {
-            ResponseEntity<String> responseNotFound = restTemplate.exchange(
-                    createURL("/organization/list"),
-                    HttpMethod.POST, entityNotFound, String.class);
-        } catch (HttpClientErrorException e) {
-            Assert.assertEquals("404 Not Found", e.getMessage());
-        }
-
-        HttpEntity<OrganizationView> entityNull = new HttpEntity(null, headers);
-        try {
-            ResponseEntity<String> responseNull = restTemplate.exchange(
-                    createURL("/organization/list"),
-                    HttpMethod.POST, entityNull, String.class);
-        } catch (HttpClientErrorException e) {
-            Assert.assertEquals("404 Not Found", e.getMessage());
-        }
+        ResponseEntity<OrganizationView[]> postForEntity = restTemplate.postForEntity(createURL("/organization/list"),
+                entitySuccess, OrganizationView[].class);
+        Assert.assertEquals("200", postForEntity.getStatusCode().toString());
+        Assert.assertEquals(String.valueOf(expectedValue), String.valueOf(postForEntity.getBody()[0]));
     }
 
     /**
-     * Тест для проверки возвращения организации по id
+     * Тест для проверки фильтра организации c пустым телом запроса
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void filterOrganizationWithNullBodyResponse() {
+        HttpEntity<OrganizationView> entity = new HttpEntity(null, headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                createURL("/organization/list"),
+                HttpMethod.POST, entity, String.class);
+    }
+
+    /**
+     * Тест для проверки фильтра организации c некорректным методом GET
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void filterOrganizationGetMethod() {
+        HttpEntity<OrganizationView> entity = new HttpEntity(null, headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                createURL("/organization/list"),
+                HttpMethod.GET, entity, String.class);
+    }
+
+    /**
+     * Тест для проверки возвращения организации c корректным id
      */
     @Test
-    public void getOrganizationById() {
+    public void getOrganizationByIdWithAvailableId() {
         HttpEntity<OrganizationView> entitySuccess = new HttpEntity(null, headers);
-        ResponseEntity<String> responseSuccess = restTemplate.exchange(
+        ResponseEntity<OrganizationView> responseSuccess = restTemplate.exchange(
                 createURL("/organization/2"),
-                HttpMethod.GET, entitySuccess, String.class);
-        String expectedValue = "{\"data\":{\"id\":2,\"name\":\"DNS\",\"fullName\":\"ООО ДНС\",\"inn\":\"566401571\"," +
-                "\"kpp\":\"644901001\",\"address\":\"ул. Достоевского, 42\",\"isActive\":true}}";
+                HttpMethod.GET, entitySuccess, OrganizationView.class);
+        OrganizationView expectedOrgView = createOrgViewGetById();
         Assert.assertEquals("200", responseSuccess.getStatusCode().toString());
-        Assert.assertEquals(expectedValue, responseSuccess.getBody());
+        Assert.assertEquals(String.valueOf(expectedOrgView), String.valueOf(responseSuccess.getBody()));
+    }
 
+    /**
+     * Тест для проверки возвращения организации c некорректным id
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void getOrganizationByIdWithNotAvailableId() {
         HttpEntity<OrganizationView> entityNotFound = new HttpEntity(null, headers);
-        try {
-            ResponseEntity<String> responseNotFound = restTemplate.exchange(
-                    createURL("/user/14s5s"),
-                    HttpMethod.GET, entityNotFound, String.class);
-        } catch (HttpClientErrorException e) {
-            Assert.assertEquals("404 Not Found", e.getMessage());
-        }
+        ResponseEntity<String> responseNotFound = restTemplate.exchange(
+                createURL("/user/14s5s"),
+                HttpMethod.GET, entityNotFound, String.class);
+    }
+
+    /**
+     * Тест для проверки возвращения организации по id с недоступным методом POST
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void getOrganizationByIdPostMethod() {
+        HttpEntity<OrganizationView> entityNotFound = new HttpEntity(null, headers);
+        ResponseEntity<String> responseNotFound = restTemplate.exchange(
+                createURL("/user/14s5s"),
+                HttpMethod.POST, entityNotFound, String.class);
     }
 
     /**
      * Тест для проверки обновления организации
      */
     @Test
-    public void updateOrganization() {
+    public void updateOrganizationSuccessResponse() {
         OrganizationView orgViewSuccess = new OrganizationView();
         orgViewSuccess.id = 1L;
         orgViewSuccess.name = "Мегафон";
@@ -112,33 +130,48 @@ public class OrganizationControllerTest {
                 HttpMethod.POST, entitySuccess, String.class);
         Assert.assertEquals("{\"data\":{\"result\":\"success\"}}", responseSuccess.getBody());
         Assert.assertEquals("200", responseSuccess.getStatusCode().toString());
-
-        OrganizationView orgViewNotFound = new OrganizationView();
-        orgViewNotFound.id = 1L;
-        HttpEntity<OrganizationView> entityNotFound = new HttpEntity(orgViewNotFound, headers);
-        try {
-            ResponseEntity<String> responseNotFound = restTemplate.exchange(
-                    createURL("/organization/update"),
-                    HttpMethod.POST, entityNotFound, String.class);
-        } catch (HttpClientErrorException e) {
-            Assert.assertEquals("404 Not Found", e.getMessage());
-        }
-
-        HttpEntity<OrganizationView> entityNull = new HttpEntity(null, headers);
-        try {
-            ResponseEntity<String> responseNull = restTemplate.exchange(
-                    createURL("/organization/update"),
-                    HttpMethod.POST, entityNull, String.class);
-        } catch (HttpClientErrorException e) {
-            Assert.assertEquals("404 Not Found", e.getMessage());
-        }
     }
 
     /**
-     * Тест для проверки сохранения организации
+     * Тест для проверки обновления организации c неполными данными
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void updateOrganizationWithPartOfRequestedFields() {
+        OrganizationView orgView = new OrganizationView();
+        orgView.id = 1L;
+        HttpEntity<OrganizationView> entity = new HttpEntity(orgView, headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                createURL("/organization/update"),
+                HttpMethod.POST, entity, String.class);
+    }
+
+    /**
+     * Тест для проверки обновления организации c пустым телом запроса
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void updateOrganizationWithNullBodyResponse() {
+        HttpEntity<OrganizationView> entityNull = new HttpEntity(null, headers);
+        ResponseEntity<String> responseNull = restTemplate.exchange(
+                createURL("/organization/update"),
+                HttpMethod.POST, entityNull, String.class);
+    }
+
+    /**
+     * Тест для проверки обновления организации c недопустимым методом GET
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void updateOrganizationGetMethod() {
+        HttpEntity<OrganizationView> entityNull = new HttpEntity(null, headers);
+        ResponseEntity<String> responseNull = restTemplate.exchange(
+                createURL("/organization/update"),
+                HttpMethod.GET, entityNull, String.class);
+    }
+
+    /**
+     * Тест для проверки сохранения организации c требуемыми полями
      */
     @Test
-    public void saveOrganization() {
+    public void saveOrganizationSuccessResponse() {
         OrganizationView orgViewSuccess = new OrganizationView();
         orgViewSuccess.name = "Мегафон";
         orgViewSuccess.fullName = "ПАО Мегафон";
@@ -151,29 +184,53 @@ public class OrganizationControllerTest {
                 HttpMethod.POST, entitySuccess, String.class);
         Assert.assertEquals("{\"data\":{\"result\":\"success\"}}", responseSuccess.getBody());
         Assert.assertEquals("200", responseSuccess.getStatusCode().toString());
+    }
 
+    /**
+     * Тест для проверки сохранения организации c частью требуемых полей
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void saveOrganizationWithPartOfRequestedFields() {
         OrganizationView orgViewNotFound = new OrganizationView();
         orgViewNotFound.id = 1L;
         HttpEntity<OrganizationView> entityNotFound = new HttpEntity(orgViewNotFound, headers);
-        try {
             ResponseEntity<String> responseNotFound = restTemplate.exchange(
                     createURL("/organization/save"),
                     HttpMethod.POST, entityNotFound, String.class);
-        } catch (HttpClientErrorException e) {
-            Assert.assertEquals("404 Not Found", e.getMessage());
-        }
+    }
 
+    /**
+     * Тест для проверки сохранения организации c частью требуемых полей
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void saveOrganizationWithNullBodyResponse() {
         HttpEntity<OrganizationView> entityNull = new HttpEntity(null, headers);
-        try {
-            ResponseEntity<String> responseNull = restTemplate.exchange(
-                    createURL("/organization/save"),
-                    HttpMethod.POST, entityNull, String.class);
-        } catch (HttpClientErrorException e) {
-            Assert.assertEquals("404 Not Found", e.getMessage());
-        }
+        ResponseEntity<String> responseNull = restTemplate.exchange(
+                createURL("/organization/save"),
+                HttpMethod.POST, entityNull, String.class);
     }
 
     private String createURL(String url) {
-        return "http://localhost:" + port + "/api" + url;
+        return String.format("http://localhost:%s/api%s", port, url);
+    }
+
+    private OrganizationView createOrgViewForFilter() {
+        OrganizationView orgView = new OrganizationView();
+        orgView.id = 1L;
+        orgView.name = "Евросеть";
+        orgView.isActive = true;
+        return orgView;
+    }
+
+    private OrganizationView createOrgViewGetById() {
+        OrganizationView organizationView = new OrganizationView();
+        organizationView.id = 2L;
+        organizationView.name = "DNS";
+        organizationView.fullName = "ООО ДНС";
+        organizationView.inn = "566401571";
+        organizationView.kpp = "644901001";
+        organizationView.address = "ул. Достоевского, 42";
+        organizationView.isActive = true;
+        return organizationView;
     }
 }

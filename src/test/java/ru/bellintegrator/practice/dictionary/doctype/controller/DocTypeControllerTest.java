@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import ru.bellintegrator.practice.Application;
 
@@ -31,18 +32,29 @@ public class DocTypeControllerTest {
     int port;
 
     /**
-     * Тест для проверки возвращения всех типов документов
+     * Тест для проверки возвращения всех типов документов c методом GET
      */
     @Test
-    public void getDocTypes() {
-        HttpEntity<String> entityNull = new HttpEntity(null, headers);
-        ResponseEntity<String> responseNull = restTemplate.exchange(
+    public void getDocTypesGetMethod() {
+        HttpEntity<String> entityWithNullBody = new HttpEntity(null, headers);
+        ResponseEntity<String> response = restTemplate.exchange(
                 createURL("/docs"),
-                HttpMethod.GET, entityNull, String.class);
-        Assert.assertEquals("200", responseNull.getStatusCode().toString());
+                HttpMethod.GET, entityWithNullBody, String.class);
+        Assert.assertEquals("200", response.getStatusCode().toString());
+    }
+
+    /**
+     * Тест для проверки возвращения всех типов документов c методом POST
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void exceptionWithGetDocTypesPostMethod() {
+        HttpEntity<String> entityWithNullBody = new HttpEntity(null, headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                createURL("/docs"),
+                HttpMethod.POST, entityWithNullBody, String.class);
     }
 
     private String createURL(String url) {
-        return "http://localhost:" + port + "/api" + url;
+        return String.format("http://localhost:%s/api%s", port, url);
     }
 }

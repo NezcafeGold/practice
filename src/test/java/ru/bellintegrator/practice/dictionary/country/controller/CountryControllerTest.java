@@ -11,7 +11,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import ru.bellintegrator.practice.Application;
@@ -33,18 +32,29 @@ public class CountryControllerTest {
     int port;
 
     /**
-     * Тест для проверки возвращения списка стран
+     * Тест для проверки возвращения списка стран c методом GET
      */
     @Test
-    public void getCountries() {
-        HttpEntity<String> entityNull = new HttpEntity(null, headers);
-        ResponseEntity<String> responseNull = restTemplate.exchange(
+    public void getCountriesGetMethod() {
+        HttpEntity<String> entityWithNullBody = new HttpEntity(null, headers);
+        ResponseEntity<String> response = restTemplate.exchange(
                 createURL("/countries"),
-                HttpMethod.GET, entityNull, String.class);
-        Assert.assertEquals("200", responseNull.getStatusCode().toString());
+                HttpMethod.GET, entityWithNullBody, String.class);
+        Assert.assertEquals("200", response.getStatusCode().toString());
+    }
+
+    /**
+     * Тест для проверки возвращения списка стран c методом POST
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void exceptionWithGetCountriesPostMethod() {
+        HttpEntity<String> entityWithNullBody = new HttpEntity(null, headers);
+        ResponseEntity<String> response = restTemplate.exchange(
+                createURL("/countries"),
+                HttpMethod.POST, entityWithNullBody, String.class);
     }
 
     private String createURL(String url) {
-        return "http://localhost:" + port + "/api" + url;
+        return String.format("http://localhost:%s/api%s", port, url);
     }
 }

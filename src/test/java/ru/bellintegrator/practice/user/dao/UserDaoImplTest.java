@@ -15,8 +15,6 @@ import ru.bellintegrator.practice.user.view.UserView;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
-
 /**
  * Тест для проверки ДАО пользователя
  */
@@ -33,7 +31,7 @@ public class UserDaoImplTest {
     DocumentDao documentDao;
 
     /**
-     * Тест для проверки фильтра пользователя
+     * Тест для проверки фильтра пользователя с одним параметром officeId
      */
     @Test
     public void filterUser() {
@@ -44,23 +42,34 @@ public class UserDaoImplTest {
         userList = userDao.filterUser(userView);
         Assert.assertNotNull(userList);
         Assert.assertEquals(expectedUsers, userList.size());
+    }
 
+    /**
+     * Тест для проверки фильтра пользователя с несколькими параметрами
+     */
+    @Test
+    public void filterUserWithMoreFields() {
         UserView userViewFull = new UserView();
         userViewFull.officeId = 4L;
         userViewFull.firstName = "Вячеслав";
         userViewFull.secondName ="Андреев";
         userViewFull.docCode ="21";
-        userList = userDao.filterUser(userViewFull);
-        expectedUsers = 1;
+        List<User> userList = userDao.filterUser(userViewFull);
         Assert.assertNotNull(userList);
-        Assert.assertEquals(expectedUsers, userList.size());
+        Assert.assertEquals(1, userList.size());
 
+    }
+
+    /**
+     * Тест для проверки фильтра пользователя с параметрами, которых нет в базе данных
+     */
+    @Test
+    public void filterUserWithNoAvailableFields() {
         UserView userViewWrong = new UserView();
-        userViewFull.officeId = 4L;
-        userViewFull.firstName = "Ры";
-        expectedUsers = 0;
-        userList = userDao.filterUser(userViewWrong);
-        Assert.assertEquals(expectedUsers, userList.size());
+        userViewWrong.officeId = 4L;
+        userViewWrong.firstName = "Ры";
+        List<User> userList = userDao.filterUser(userViewWrong);
+        Assert.assertEquals(0, userList.size());
     }
 
     /**

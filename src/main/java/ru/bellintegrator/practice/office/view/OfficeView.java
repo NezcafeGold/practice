@@ -2,6 +2,7 @@ package ru.bellintegrator.practice.office.view;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -9,9 +10,11 @@ import io.swagger.annotations.ApiModelProperty;
 public class OfficeView {
 
     @ApiModelProperty(hidden = true, value = "Первичный ключ id")
+    @JsonProperty
     public Long id;
 
     @ApiModelProperty(value = "Название офиса")
+    @JsonProperty
     public String name;
 
     @ApiModelProperty(value = "Адрес")
@@ -23,6 +26,7 @@ public class OfficeView {
     public String phone;
 
     @ApiModelProperty(value = "Активность")
+    @JsonProperty
     public Boolean isActive;
 
     @ApiModelProperty(value = "id организации")

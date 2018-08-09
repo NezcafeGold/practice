@@ -9,10 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.transaction.annotation.Transactional;
-import ru.bellintegrator.practice.Application;
 import ru.bellintegrator.practice.organization.dao.OrganizationDao;
 import ru.bellintegrator.practice.organization.model.Organization;
 import ru.bellintegrator.practice.organization.view.OrganizationView;
@@ -57,24 +53,11 @@ public class OrganizationServiceImplTest {
         Assert.assertNull(actualOrgView.phone);
     }
 
-    private OrganizationView createOrganizationView() {
-        OrganizationView organizationView = new OrganizationView();
-        organizationView.name = "Евросеть";
-        return organizationView;
-    }
-
-    private List<Organization> createList() {
-        List<Organization> organizations = new ArrayList<>();
-        Organization organizationFromDao = new Organization(1L, "Евросеть", "ПАО Евросеть", "74544", "121", "ул. Пушкина", "8971254545", true);
-        organizations.add(organizationFromDao);
-        return organizations;
-    }
-
     /**
-     * Тест для проверки возврата организации по id
+     * Тест для проверки возврата организации по корректным id
      */
     @Test
-    public void getOrganizationById() {
+    public void getOrganizationByAvailableId() {
         Organization organizationMock = new Organization(1L, "Евросеть", "ПАО Евросеть", "74544", "121", "ул. Пушкина", "8971254545", true);
         Long id = 1L;
 
@@ -90,25 +73,28 @@ public class OrganizationServiceImplTest {
         Assert.assertEquals("ул. Пушкина", actualOrgView.address);
         Assert.assertEquals("8971254545", actualOrgView.phone);
         Assert.assertEquals(true, actualOrgView.isActive);
+    }
 
-        try {
-            organizationService.getOrganizationById(1222L);
-        } catch (ServiceException e) {
-            Assert.assertTrue(e.getMessage().equals("Организация с id 1222 не найдена"));
-        }
+    /**
+     * Тест для проверки возврата организации по id, которой нет в базе данных
+     */
+    @Test(expected = ServiceException.class)
+    public void getOrganizationByNotAvailableId() {
+        Organization organizationMock = new Organization();
+        Mockito.when(organizationDao.getOrganizationById(1L)).thenReturn(organizationMock);
+        organizationService.getOrganizationById(1222L);
+
     }
 
     /**
      * Тест для проверки обновления организации
      */
     @Test
-    public void updateOrganization() {
+    public void updateOrganizationWithRequestedFields() {
         ArgumentCaptor<Organization> argument = ArgumentCaptor.forClass(Organization.class);
 
         OrganizationView organizationViewForUpdate = new OrganizationView(1L, "Мтс", "ПАО МТС", "74544",
                 "121", "ул. Пушкина", "8971254545", true);
-        OrganizationView organizationViewForUpdateWithException = new OrganizationView();
-        organizationViewForUpdateWithException.id = 1L;
         Organization organizationMock = new Organization(1L, "Евросеть", "ПАО Евросеть", "74544",
                 "121", "ул. Пушкина", "8971254545", true);
 
@@ -124,12 +110,18 @@ public class OrganizationServiceImplTest {
         Assert.assertEquals("ул. Пушкина", organizationFromArg.getAddress());
         Assert.assertEquals("8971254545", organizationFromArg.getPhone());
         Assert.assertEquals(true, organizationFromArg.getIsActive());
+    }
 
-        try {
-            organizationService.updateOrganization(organizationViewForUpdateWithException);
-        } catch (ServiceException e) {
-            Assert.assertTrue(e.getMessage().equals("Не введен обязательный параметр name"));
-        }
+    /**
+     * Тест для проверки обновления организации c частью запрашиваемых полей
+     */
+    @Test(expected = ServiceException.class)
+    public void updateOrganizationWithPartOfRequestedFields() {
+        Organization organizationMock = new Organization();
+        Mockito.when(organizationDao.getOrganizationById(1L)).thenReturn(organizationMock);
+        OrganizationView organizationViewForUpdateWithException = new OrganizationView();
+        organizationViewForUpdateWithException.id = 1L;
+        organizationService.updateOrganization(organizationViewForUpdateWithException);
     }
 
     /**
@@ -154,5 +146,18 @@ public class OrganizationServiceImplTest {
         organizationView.kpp = "4645646";
         organizationView.address = "4645646";
         return organizationView;
+    }
+
+    private OrganizationView createOrganizationView() {
+        OrganizationView organizationView = new OrganizationView();
+        organizationView.name = "Евросеть";
+        return organizationView;
+    }
+
+    private List<Organization> createList() {
+        List<Organization> organizations = new ArrayList<>();
+        Organization organizationFromDao = new Organization(1L, "Евросеть", "ПАО Евросеть", "74544", "121", "ул. Пушкина", "8971254545", true);
+        organizations.add(organizationFromDao);
+        return organizations;
     }
 }

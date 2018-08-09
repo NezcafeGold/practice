@@ -6,12 +6,13 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import ru.bellintegrator.practice.Application;
 import ru.bellintegrator.practice.dictionary.country.model.Country;
-import ru.bellintegrator.practice.dictionary.country.view.CountryView;
 
+import javax.persistence.NoResultException;
 import java.util.List;
 
 /**
@@ -26,10 +27,10 @@ public class CountryDaoImplTest {
     CountryDao countryDao;
 
     /**
-     * Тест для проверки возвращения страны по коду
+     * Тест для проверки возвращения страны по существующему коду
      */
     @Test
-    public void getCountryByCode() {
+    public void getCountryByAvailableCode() {
         String code = "643";
         Country country = countryDao.getCountryByCode(code);
         String expectedName = "Российская Федерация";
@@ -41,12 +42,20 @@ public class CountryDaoImplTest {
     }
 
     /**
+     * Тест для проверки возвращения страны по несуществующему коду
+     */
+    @Test(expected = EmptyResultDataAccessException.class)
+    public void getCountryByNotAvailableCode() {
+        String wrongCode = "777";
+        Country countryWithWrongCode = countryDao.getCountryByCode(wrongCode);
+    }
+
+    /**
      * Тест для проверки возвращения всех стран
      */
     @Test
     public void getAllCountries() {
         List<Country> countryList = countryDao.getAllCountries();
-        int expectedCountries = 5;
         Assert.assertEquals(5, countryList.size());
     }
 }

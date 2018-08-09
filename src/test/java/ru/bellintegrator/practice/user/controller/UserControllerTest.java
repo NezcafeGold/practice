@@ -10,19 +10,24 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import ru.bellintegrator.practice.Application;
 
+import ru.bellintegrator.practice.Application;
+import ru.bellintegrator.practice.dictionary.country.model.Country;
+import ru.bellintegrator.practice.dictionary.doctype.model.DocType;
+import ru.bellintegrator.practice.user.model.Document;
+import ru.bellintegrator.practice.user.model.User;
 import ru.bellintegrator.practice.user.view.UserView;
 
 /**
  * Тест для проверки контроллера пользователя
  */
 @RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = Application.class)
+@Transactional
 @DirtiesContext
 public class UserControllerTest {
 
@@ -34,10 +39,10 @@ public class UserControllerTest {
     int port;
 
     /**
-     * Тест для проверки фильтра пользователя
+     * Тест для проверки фильтра пользователей по параметру officeId
      */
     @Test
-    public void filterUser() {
+    public void filterUserWithId() {
         UserView userViewSuccess = new UserView();
         userViewSuccess.officeId = 4L;
         HttpEntity<UserView> entitySuccess = new HttpEntity(userViewSuccess, headers);
@@ -46,35 +51,60 @@ public class UserControllerTest {
                 HttpMethod.POST, entitySuccess, String.class);
         Assert.assertEquals("200", responseSuccess.getStatusCode().toString());
 
+        ResponseEntity<UserView[]> postForEntity = restTemplate.postForEntity(createURL("/organization/list"),
+                entitySuccess, UserView[].class);
+        Assert.assertEquals("200", postForEntity.getStatusCode().toString());
+    }
+
+    /**
+     * Тест для проверки фильтра пользователя по всем полям
+     */
+    @Test
+    public void filterUserWithAllFields() {
         UserView userViewSuccessFull = new UserView();
         userViewSuccessFull.officeId = 4L;
         userViewSuccessFull.firstName = "Вячеслав";
         userViewSuccessFull.secondName = "Андреев";
         HttpEntity<UserView> entitySuccessFull = new HttpEntity(userViewSuccessFull, headers);
-        ResponseEntity<String> responseSuccessFull = restTemplate.exchange(
+        ResponseEntity<UserView[]> responseSuccessFull = restTemplate.exchange(
                 createURL("/user/list"),
-                HttpMethod.POST, entitySuccessFull, String.class);
-        String expectedBody = "{\"data\":[{\"id\":5,\"firstName\":\"Вячеслав\",\"secondName\":\"Андреев\",\"middleName\":\"Романович\",\"position\":\"Продавец\"}]}";
-        Assert.assertEquals(expectedBody, responseSuccessFull.getBody());
+                HttpMethod.POST, entitySuccessFull, UserView[].class);
+        UserView userView = createUserViewForFilter();
+        Assert.assertEquals(String.valueOf(userView), String.valueOf(responseSuccessFull.getBody()[0]));
+    }
 
+    /**
+     * Тест для проверки фильтра пользователя с пустыми полями
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void filterUserWithNoFields() {
         UserView userViewNotFound = new UserView();
         HttpEntity<UserView> entityNotFound = new HttpEntity(userViewNotFound, headers);
-        try {
-            ResponseEntity<String> responseNotFound = restTemplate.exchange(
-                    createURL("/user/list"),
-                    HttpMethod.POST, entityNotFound, String.class);
-        } catch (HttpClientErrorException e) {
-            Assert.assertEquals("404 Not Found", e.getMessage());
-        }
+        ResponseEntity<String> responseNotFound = restTemplate.exchange(
+                createURL("/user/list"),
+                HttpMethod.POST, entityNotFound, String.class);
+    }
 
+    /**
+     * Тест для проверки фильтра пользователя с пустыми телом запроса
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void filterUserWithEmptyBodyResponse() {
         HttpEntity<UserView> entityNull = new HttpEntity(null, headers);
-        try {
-            ResponseEntity<String> responseNull = restTemplate.exchange(
-                    createURL("/user/list"),
-                    HttpMethod.POST, entityNull, String.class);
-        } catch (HttpClientErrorException e) {
-            Assert.assertEquals("404 Not Found", e.getMessage());
-        }
+        ResponseEntity<String> responseNull = restTemplate.exchange(
+                createURL("/user/list"),
+                HttpMethod.POST, entityNull, String.class);
+    }
+
+    /**
+     * Тест для проверки фильтра пользователя с недопустимым методом GET
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void filterUserWithGetMethod() {
+        HttpEntity<UserView> entityNull = new HttpEntity(null, headers);
+        ResponseEntity<String> responseNull = restTemplate.exchange(
+                createURL("/user/list"),
+                HttpMethod.GET, entityNull, String.class);
     }
 
     /**
@@ -83,29 +113,28 @@ public class UserControllerTest {
     @Test
     public void getUserById() {
         HttpEntity<UserView> entitySuccess = new HttpEntity(null, headers);
-        ResponseEntity<String> responseSuccess = restTemplate.exchange(
+        ResponseEntity<UserView> responseSuccess = restTemplate.exchange(
                 createURL("/user/1"),
-                HttpMethod.GET, entitySuccess, String.class);
-        String expectedBody = "{\"data\":{\"id\":1,\"firstName\":\"Михаил\",\"secondName\":\"Уточкин\"," +
-                "\"middleName\":\"Петрович\",\"position\":\"Директор\",\"phone\":\"89275588712\"," +
-                "\"docName\":\"Паспорт гражданина Российской Федерации\",\"docNumber\":\"8345654879\"," +
-                "\"docDate\":\"21.05.05\",\"citizenshipName\":\"Российская Федерация\",\"citizenshipCode\":\"643\"," +
-                "\"isIdentified\":true}}";
+                HttpMethod.GET, entitySuccess, UserView.class);
+        UserView actualUserView = createUserViewGetByIdGetById();
         Assert.assertEquals("200", responseSuccess.getStatusCode().toString());
-        Assert.assertEquals(expectedBody, responseSuccess.getBody());
+        Assert.assertEquals(String.valueOf(actualUserView), String.valueOf(responseSuccess.getBody()));
 
-        HttpEntity<UserView> entityNotFound = new HttpEntity(null, headers);
-        try {
-            ResponseEntity<String> responseNotFound = restTemplate.exchange(
-                    createURL("/user/14s5s"),
-                    HttpMethod.GET, entityNotFound, String.class);
-        } catch (HttpClientErrorException e) {
-            Assert.assertEquals("404 Not Found", e.getMessage());
-        }
     }
 
     /**
-     * Тест для проверки обновления пользователя
+     * Тест для проверки возвращения пользователя по некорректному id
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void getUserByNotAvailableId() {
+        HttpEntity<UserView> entityNotFound = new HttpEntity(null, headers);
+        ResponseEntity<String> responseNotFound = restTemplate.exchange(
+                createURL("/user/14s5s"),
+                HttpMethod.GET, entityNotFound, String.class);
+    }
+
+    /**
+     * Тест для проверки обновления пользователя с запрашиваемыми полями
      */
     @Test
     public void updateUser() {
@@ -119,33 +148,48 @@ public class UserControllerTest {
                 HttpMethod.POST, entitySuccess, String.class);
         Assert.assertEquals("{\"data\":{\"result\":\"success\"}}", responseSuccess.getBody());
         Assert.assertEquals("200", responseSuccess.getStatusCode().toString());
+    }
 
-        UserView userViewNotFound = new UserView();
-        userViewSuccess.id = 1L;
-        HttpEntity<UserView> entityNotFound = new HttpEntity(userViewNotFound, headers);
-        try {
+    /**
+     * Тест для проверки обновления пользователя с частью запрашиваемых полей
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void updateUserWithPartOfRequestedFields() {
+        UserView userView = new UserView();
+        userView.id = 1L;
+        HttpEntity<UserView> entityNotFound = new HttpEntity(userView, headers);
             ResponseEntity<String> responseNotFound = restTemplate.exchange(
                     createURL("/user/update"),
                     HttpMethod.POST, entityNotFound, String.class);
-        } catch (HttpClientErrorException e) {
-            Assert.assertEquals("404 Not Found", e.getMessage());
-        }
+    }
 
+    /**
+     * Тест для проверки обновления пользователя с пустым телом запроса
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void updateUserWithNullBodyResponse() {
         HttpEntity<UserView> entityNull = new HttpEntity(null, headers);
-        try {
             ResponseEntity<String> responseNull = restTemplate.exchange(
                     createURL("/user/update"),
                     HttpMethod.POST, entityNull, String.class);
-        } catch (HttpClientErrorException e) {
-            Assert.assertEquals("404 Not Found", e.getMessage());
-        }
+    }
+
+    /**
+     * Тест для проверки обновления пользователя с недопустимым методом GET
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void updateUserGetMethod() {
+        HttpEntity<UserView> entityNull = new HttpEntity(null, headers);
+        ResponseEntity<String> responseNull = restTemplate.exchange(
+                createURL("/user/update"),
+                HttpMethod.GET, entityNull, String.class);
     }
 
     /**
      * Тест для проверки сохранения пользователя
      */
     @Test
-    public void saveUser() {
+    public void saveUserWithRequestedFields() {
         UserView userViewSuccess = new UserView();
         userViewSuccess.firstName = "Геннадий";
         userViewSuccess.position = "Директор";
@@ -155,29 +199,82 @@ public class UserControllerTest {
                 HttpMethod.POST, entitySuccess, String.class);
         Assert.assertEquals("{\"data\":{\"result\":\"success\"}}", responseSuccess.getBody());
         Assert.assertEquals("200", responseSuccess.getStatusCode().toString());
+    }
 
-        UserView userViewNotFound = new UserView();
-        userViewSuccess.firstName = "Геннадий";
-        HttpEntity<UserView> entityNotFound = new HttpEntity(userViewNotFound, headers);
-        try {
+    /**
+     * Тест для проверки сохранения пользователя c частью запрашиваемых полей
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void saveUserWithPartOfRequestedFields() {
+        UserView userView = new UserView();
+        userView.firstName = "Геннадий";
+        HttpEntity<UserView> entityNotFound = new HttpEntity(userView, headers);
             ResponseEntity<String> responseNotFound = restTemplate.exchange(
                     createURL("/user/update"),
                     HttpMethod.POST, entityNotFound, String.class);
-        } catch (HttpClientErrorException e) {
-            Assert.assertEquals("404 Not Found", e.getMessage());
-        }
+    }
 
-        HttpEntity<UserView> entityNull = new HttpEntity(null, headers);
-        try {
-            ResponseEntity<String> responseNull = restTemplate.exchange(
+    /**
+     * Тест для проверки сохранения пользователя c пустым телом запроса
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void saveUserWithNullBodyResponse() {
+        HttpEntity<UserView> entity = new HttpEntity(null, headers);
+            ResponseEntity<String> response = restTemplate.exchange(
                     createURL("/user/save"),
-                    HttpMethod.POST, entityNull, String.class);
-        } catch (HttpClientErrorException e) {
-            Assert.assertEquals("404 Not Found", e.getMessage());
-        }
+                    HttpMethod.POST, entity, String.class);
+    }
+
+    /**
+     * Тест для проверки сохранения пользователя c недопустимым методом GET
+     */
+    @Test(expected = HttpClientErrorException.class)
+    public void saveUserGetMethod() {
+        HttpEntity<UserView> entityNull = new HttpEntity(null, headers);
+        ResponseEntity<String> responseNull = restTemplate.exchange(
+                createURL("/user/save"),
+                HttpMethod.GET, entityNull, String.class);
     }
 
     private String createURL(String url) {
-        return "http://localhost:" + port + "/api" + url;
+        return String.format("http://localhost:%s/api%s", port, url);
     }
+
+    private UserView createUserViewForFilter() {
+        UserView userView = new UserView();
+        userView.id = 5L;
+        userView.firstName = "Вячеслав";
+        userView.secondName = "Андреев";
+        userView.middleName = "Романович";
+        userView.position = "Продавец";
+        return userView;
+    }
+
+    private UserView createUserViewGetByIdGetById() {
+        UserView userView = new UserView();
+        userView.id = 1L;
+        userView.firstName = "Михаил";
+        userView.secondName = "Уточкин";
+        userView.middleName = "Петрович";
+        userView.position = "Директор";
+        userView.phone = "89275588712";
+        userView.isIdentified = true;
+        userView.docName = "Паспорт гражданина Российской Федерации";
+        userView.docNumber = "8345654879";
+        userView.docDate = "21.05.05";
+        userView.citizenshipCode = "643";
+        userView.citizenshipName = "Российская Федерация";
+        return userView;
+
+    }
+
+    private User createUser(){
+        User user = new User(1L, "Михаил", "Уточкин", "Петрович", "Директор", "89275588712", true);
+        DocType docType = new DocType("Паспорт гражданина Российской Федерации", "21");
+        Country country = new Country("Российская Федерация", "643");
+        Document document = new Document("8345654879", "21.05.05", docType, country);
+        user.setDocument(document);
+        return user;
+    }
+
 }

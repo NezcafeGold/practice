@@ -9,10 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.transaction.annotation.Transactional;
-import ru.bellintegrator.practice.Application;
 import ru.bellintegrator.practice.office.dao.OfficeDao;
 import ru.bellintegrator.practice.office.model.Office;
 import ru.bellintegrator.practice.office.view.OfficeView;
@@ -34,11 +30,10 @@ public class OfficeServiceImplTest {
     OfficeServiceImpl officeService;
 
     /**
-     * Тест для проверки фильтра офиса
+     * Тест для проверки фильтра офиса c получением списка офисов
      */
     @Test
-    public void filterOffice() {
-
+    public void filterOfficeForList() {
         List<Office> officeListMock = createListMock();
         OfficeView officeViewForFilter = new OfficeView();
         officeViewForFilter.orgId = 1L;
@@ -55,23 +50,13 @@ public class OfficeServiceImplTest {
             Assert.assertNull(eachOfficeView.phone);
             Assert.assertNull(eachOfficeView.orgId);
         }
-
-    }
-
-    private List<Office> createListMock() {
-        List<Office> officeListMock = new ArrayList<>();
-        Office office = new Office(1L, "Центральный", "ул. Пушкина, 49", "89275588796", true);
-        Office office2 = new Office(2L, "Восточный", "ул. Колотушкина, 29", "89275588796", true);
-        officeListMock.add(office);
-        officeListMock.add(office2);
-        return officeListMock;
     }
 
     /**
-     * Тест для проверки возвращения офиса по id
+     * Тест для проверки возвращения офиса по существующему id
      */
     @Test
-    public void getOfficeById() {
+    public void getOfficeByIdWithAvailableId() {
         Office officeMock = new Office(1L, "Центральный", "ул. Пушкина, 49", "89275588796", true);
 
         Mockito.when(officeDaoMock.getOfficeById(1L)).thenReturn(officeMock);
@@ -85,40 +70,48 @@ public class OfficeServiceImplTest {
         Assert.assertEquals(true, actualOfficeView.isActive);
         Assert.assertNull(actualOfficeView.orgId);
 
-        try {
-            officeService.getOfficeById(1222L);
-        } catch (ServiceException e){
-            Assert.assertTrue( e.getMessage().equals("Офис 1222 не найден"));
-        }
     }
 
     /**
-     * Тест для проверки обновления офиса
+     * Тест для проверки возвращения офиса по некорректному id
+     */
+    @Test(expected = ServiceException.class)
+    public void getOfficeByIdWithNotAvailableId() {
+        Office officeMock = new Office();
+        Mockito.when(officeDaoMock.getOfficeById(1L)).thenReturn(officeMock);
+        OfficeView actualOfficeView = officeService.getOfficeById(1L);
+        officeService.getOfficeById(1222L);
+    }
+
+    /**
+     * Тест для проверки обновления офиса c требуемыми полями
      */
     @Test
-    public void updateOffice() {
+    public void updateOfficeWithRequestedFields() {
         ArgumentCaptor<Office> argument = ArgumentCaptor.forClass(Office.class);
-
         OfficeView officeViewForUpdate = new OfficeView(1L, "Восточный", "ул. Пушкина, 49", "89275588796", true);
-
-        OfficeView officeViewForUpdateWithException = new OfficeView();
-        officeViewForUpdateWithException.id = 1L;
-
         Office officeMock = new Office("Центральный", "ул. Пушкина, 49", "89275588796", true);
 
         Mockito.when(officeDaoMock.getOfficeById(1L)).thenReturn(officeMock);
-
         officeService.updateOffice(officeViewForUpdate);
         Mockito.verify(officeDaoMock).update(argument.capture());
         Office officeFromArg = argument.getValue();
 
         Assert.assertEquals("Восточный", officeFromArg.getName());
         Assert.assertEquals("ул. Пушкина, 49", officeFromArg.getAddress());
-        try {
-            officeService.updateOffice(officeViewForUpdateWithException);
-        } catch (ServiceException e){
-            Assert.assertTrue( e.getMessage().equals("Не введен обязательный параметр name"));
-        }
+
+    }
+
+    /**
+     * Тест для проверки обновления офиса c недостающими данными
+     */
+    @Test(expected = ServiceException.class)
+    public void updateOfficeWithNoRequestedFields() {
+        Office officeMock = new Office("Центральный", "ул. Пушкина, 49", "89275588796", true);
+        Mockito.when(officeDaoMock.getOfficeById(1L)).thenReturn(officeMock);
+        OfficeView officeViewForUpdateWithException = new OfficeView();
+        officeViewForUpdateWithException.id = 1L;
+        officeService.updateOffice(officeViewForUpdateWithException);
     }
 
     /**
@@ -134,5 +127,14 @@ public class OfficeServiceImplTest {
         officeService.saveOffice(officeViewForSave);
         Mockito.verify(officeDaoMock).save(argument.capture());
         Assert.assertEquals("Восточный", argument.getValue().getName());
+    }
+
+    private List<Office> createListMock() {
+        List<Office> officeListMock = new ArrayList<>();
+        Office office = new Office(1L, "Центральный", "ул. Пушкина, 49", "89275588796", true);
+        Office office2 = new Office(2L, "Восточный", "ул. Колотушкина, 29", "89275588796", true);
+        officeListMock.add(office);
+        officeListMock.add(office2);
+        return officeListMock;
     }
 }

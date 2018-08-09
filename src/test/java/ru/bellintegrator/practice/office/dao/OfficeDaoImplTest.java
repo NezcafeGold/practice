@@ -27,12 +27,11 @@ public class OfficeDaoImplTest {
     @Autowired
     OfficeDao officeDao;
 
-
     /**
-     * Тест для проверки фильтра офисов
+     * Тест для проверки фильтра офисов с одним параметром
      */
     @Test
-    public void list() {
+    public void filterOfficeForResultList() {
         List<Office> offices;
         OfficeView officeViewId = new OfficeView();
         officeViewId.orgId = 2L;
@@ -40,22 +39,34 @@ public class OfficeDaoImplTest {
         offices = officeDao.list(officeViewId);
         Assert.assertNotNull(offices);
         Assert.assertEquals(expectedOffices, offices.size());
+    }
 
+    /**
+     * Тест для проверки фильтра офисов с полным
+     */
+    @Test
+    public void filterOfficeForOneOffice() {
         OfficeView officeViewFull = new OfficeView();
         officeViewFull.orgId = 2L;
         officeViewFull.name = "Рынок";
         officeViewFull.phone = "89179179171";
         officeViewFull.isActive = true;
-        offices = officeDao.list(officeViewFull);
+        List<Office> offices = officeDao.list(officeViewFull);
         Assert.assertNotNull(offices);
         Assert.assertEquals(1, offices.size());
+    }
 
+    /**
+     * Тест для проверки фильтра офисов с данными, которых нет в базе данных
+     */
+    @Test
+    public void filterOfficeWithNotAvailableValues() {
         OfficeView officeViewWrong = new OfficeView();
-        officeViewFull.orgId = 2L;
-        officeViewFull.name = "Ры";
-        officeViewFull.phone = "8111";
-        officeViewFull.isActive = true;
-        offices = officeDao.list(officeViewWrong);
+        officeViewWrong.orgId = 2L;
+        officeViewWrong.name = "Ры";
+        officeViewWrong.phone = "8111";
+        officeViewWrong.isActive = true;
+        List<Office> offices = officeDao.list(officeViewWrong);
         Assert.assertEquals(0, offices.size());
     }
 
@@ -72,10 +83,10 @@ public class OfficeDaoImplTest {
     }
 
     /**
-     * Тест для проверика обновления офиса
+     * Тест для проверки обновления офиса c требуемыми полями
      */
     @Test
-    public void update() {
+    public void updateWithRequestedFields() {
         Long id = 1L;
         Office expectedOffice = officeDao.getOfficeById(id);
         expectedOffice.setName("Офис");
@@ -87,7 +98,7 @@ public class OfficeDaoImplTest {
     }
 
     /**
-     * Тест для проверика сохранения офиса
+     * Тест для проверки сохранения офиса
      */
     @Test
     public void save() {

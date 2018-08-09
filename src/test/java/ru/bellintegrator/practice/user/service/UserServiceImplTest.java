@@ -10,20 +10,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.transaction.annotation.Transactional;
-import ru.bellintegrator.practice.Application;
+import org.springframework.web.client.HttpClientErrorException;
 import ru.bellintegrator.practice.dictionary.country.dao.CountryDao;
 import ru.bellintegrator.practice.dictionary.country.model.Country;
 import ru.bellintegrator.practice.dictionary.doctype.dao.DocTypeDao;
 import ru.bellintegrator.practice.dictionary.doctype.model.DocType;
-import ru.bellintegrator.practice.organization.service.OrganizationServiceImplTest;
-import ru.bellintegrator.practice.user.controller.UserControllerTest;
 import ru.bellintegrator.practice.user.dao.DocumentDao;
 import ru.bellintegrator.practice.user.dao.UserDao;
 import ru.bellintegrator.practice.user.model.Document;
@@ -32,8 +23,6 @@ import ru.bellintegrator.practice.user.view.UserView;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * Тест для проверки сервиса пользователя
@@ -76,35 +65,26 @@ public class UserServiceImplTest {
         Assert.assertEquals("Продавец", actualUserView.position);
         Assert.assertNull(actualUserView.phone);
         Assert.assertNull(actualUserView.isIdentified);
-
-        UserView userViewForFilterWithException = new UserView();
-        try {
-            userService.filterUser(userViewForFilterWithException);
-        } catch (ServiceException e) {
-            Assert.assertTrue(e.getMessage().equals("Не введен обязательный параметр officeId"));
-        }
-    }
-
-    private UserView createUserView() {
-        UserView userViewForFilter = new UserView();
-        userViewForFilter.officeId = 4L;
-        return userViewForFilter;
-    }
-
-    private List<User> createUserList() {
-        List<User> userList = new ArrayList<>();
-        User user = new User(5L, "Вячеслав", "Андреев", "Романович", "Продавец", "89285585484", true);
-        User user2 = new User(6L, "Марат", "Маратов", "Маратович", "Охранник", "8915125484", true);
-        userList.add(user);
-        userList.add(user2);
-        return userList;
     }
 
     /**
-     * Тест для проверки возвращения пользователя по id
+     * Тест для проверки фильтра пользователя c пустыми полями
+     */
+    @Test(expected = ServiceException.class)
+    public void filterUserWithNoRequestedFields() {
+        UserView userViewForFilter = createUserView();
+        List<User> userListMock = createUserList();
+        Mockito.when(userDao.filterUser(userViewForFilter)).thenReturn(userListMock);
+        List<UserView> actualUserViewList = userService.filterUser(userViewForFilter);
+        UserView userViewForFilterWithException = new UserView();
+        userService.filterUser(userViewForFilterWithException);
+    }
+
+    /**
+     * Тест для проверки возвращения пользователя по id, который есть в базе данных
      */
     @Test
-    public void getUserById() {
+    public void getUserByAvailableId() {
         User userMock = createUser();
 
         Mockito.when(userDao.getUserById(1L)).thenReturn(userMock);
@@ -123,28 +103,22 @@ public class UserServiceImplTest {
         Assert.assertEquals("Украина", actualUserView.citizenshipName);
         Assert.assertEquals("804", actualUserView.citizenshipCode);
         Assert.assertEquals(true, actualUserView.isIdentified);
-
-        try {
-            userService.getUserById(10L);
-        } catch (ServiceException e) {
-            Assert.assertTrue(e.getMessage().equals("Документ 10 не найден"));
-        }
     }
 
-    private User createUser() {
-        User user = new User(1L, "Вячеслав", "Андреев", "Романович", "Продавец", "89285585484", true);
-        DocType docType = new DocType("Военный билет", "07");
-        Country country = new Country("Украина", "804");
-        Document document = new Document("454454", "25.01.17", docType, country);
-        user.setDocument(document);
-        return user;
+    /**
+     * Тест для проверки возвращения пользователя по id, которого нет в базе данных
+     */
+    @Test(expected = ServiceException.class)
+    public void getUserByNotAvailableId() {
+        Mockito.when(userDao.getUserById(10L)).thenReturn(null);
+        userService.getUserById(10L);
     }
 
     /**
      * Тест для проверки обновления пользователя
      */
     @Test
-    public void updateUser() {
+    public void updateUserWithRequestedFields() {
         ArgumentCaptor<User> argument = ArgumentCaptor.forClass(User.class);
 
         UserView userViewForUpdate = new UserView(1L, "Михаил", "Боров", "Андреевич", "Директор", "89285585484",
@@ -180,21 +154,15 @@ public class UserServiceImplTest {
         Assert.assertEquals("25.01.17", documentFromArg.getDocDate());
         Assert.assertEquals("804", countryFromArg.getCode());
         Assert.assertEquals(true, userFromArg.getIsIdentified());
+    }
 
-        Mockito.when(userDao.getUserById(10L)).thenReturn(null);
-        userViewForUpdate.id = 10L;
-        try {
-            userService.updateUser(userViewForUpdate);
-        } catch (ServiceException e) {
-            Assert.assertTrue(e.getMessage().equals("Пользователь 10 не найден"));
-        }
-
-        userViewForUpdate.firstName = null;
-        try {
-            userService.updateUser(userViewForUpdate);
-        } catch (ServiceException e) {
-            Assert.assertTrue(e.getMessage().equals("Не введен обязательный параметр firstName"));
-        }
+    /**
+     * Тест для проверки обновления пользователя c отсутсвующими полями
+     */
+    @Test(expected = ServiceException.class)
+    public void updateUserWithPartOfRequestedFields() {
+        UserView userView = new UserView();
+        userService.updateUser(userView);
     }
 
     /**
@@ -230,5 +198,29 @@ public class UserServiceImplTest {
         Assert.assertEquals("25.01.17", documentFromArg.getDocDate());
         Assert.assertEquals("804", countryFromArg.getCode());
         Assert.assertEquals(true, userFromArg.getIsIdentified());
+    }
+
+    private UserView createUserView() {
+        UserView userViewForFilter = new UserView();
+        userViewForFilter.officeId = 4L;
+        return userViewForFilter;
+    }
+
+    private List<User> createUserList() {
+        List<User> userList = new ArrayList<>();
+        User user = new User(5L, "Вячеслав", "Андреев", "Романович", "Продавец", "89285585484", true);
+        User user2 = new User(6L, "Марат", "Маратов", "Маратович", "Охранник", "8915125484", true);
+        userList.add(user);
+        userList.add(user2);
+        return userList;
+    }
+
+    private User createUser() {
+        User user = new User(1L, "Вячеслав", "Андреев", "Романович", "Продавец", "89285585484", true);
+        DocType docType = new DocType("Военный билет", "07");
+        Country country = new Country("Украина", "804");
+        Document document = new Document("454454", "25.01.17", docType, country);
+        user.setDocument(document);
+        return user;
     }
 }

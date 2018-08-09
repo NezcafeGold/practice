@@ -32,12 +32,15 @@ public class ResponseController implements ResponseBodyAdvice<Object> {
                                   ServerHttpRequest serverHttpRequest,
                                   ServerHttpResponse serverHttpResponse) {
 
-        if (responseBody == null ) {
-            SuccessView successView = new SuccessView();
-            return new WrapData<Object>(successView);
-        } else {
-            return responseBody;
+        if (!(responseBody instanceof ErrorView)) {
+            if (responseBody == null) {
+                SuccessView successView = new SuccessView();
+                return new WrapData<Object>(successView);
+            } else {
+                return new WrapData<Object>(responseBody);
+            }
         }
+        return responseBody;
     }
 
     @ExceptionHandler
@@ -45,7 +48,7 @@ public class ResponseController implements ResponseBodyAdvice<Object> {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorView handleException(Exception e) {
         String exceptionMessage;
-        if (e instanceof HttpMessageNotReadableException ) {
+        if (e instanceof HttpMessageNotReadableException) {
             exceptionMessage = "Тело запроса пустое или необрабатываемое";
         } else if (e instanceof MethodArgumentTypeMismatchException || e instanceof HttpClientErrorException) {
             exceptionMessage = "Неверный формат запроса";

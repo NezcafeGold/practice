@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import ru.bellintegrator.practice.Application;
 import ru.bellintegrator.practice.dictionary.country.model.Country;
 import ru.bellintegrator.practice.dictionary.doctype.model.DocType;
+import ru.bellintegrator.practice.response.SuccessView;
 import ru.bellintegrator.practice.user.model.Document;
 import ru.bellintegrator.practice.user.model.User;
 import ru.bellintegrator.practice.user.view.UserView;
@@ -46,9 +47,9 @@ public class UserControllerTest {
         UserView userViewSuccess = new UserView();
         userViewSuccess.officeId = 4L;
         HttpEntity<UserView> entitySuccess = new HttpEntity(userViewSuccess, headers);
-        ResponseEntity<String> responseSuccess = restTemplate.exchange(
+        ResponseEntity<UserView[]> responseSuccess = restTemplate.exchange(
                 createURL("/user/list"),
-                HttpMethod.POST, entitySuccess, String.class);
+                HttpMethod.POST, entitySuccess, UserView[].class);
         Assert.assertEquals("200", responseSuccess.getStatusCode().toString());
 
         ResponseEntity<UserView[]> postForEntity = restTemplate.postForEntity(createURL("/organization/list"),
@@ -80,9 +81,9 @@ public class UserControllerTest {
     public void filterUserWithNoFields() {
         UserView userViewNotFound = new UserView();
         HttpEntity<UserView> entityNotFound = new HttpEntity(userViewNotFound, headers);
-        ResponseEntity<String> responseNotFound = restTemplate.exchange(
+        ResponseEntity<UserView[]> responseNotFound = restTemplate.exchange(
                 createURL("/user/list"),
-                HttpMethod.POST, entityNotFound, String.class);
+                HttpMethod.POST, entityNotFound, UserView[].class);
     }
 
     /**
@@ -90,10 +91,10 @@ public class UserControllerTest {
      */
     @Test(expected = HttpClientErrorException.class)
     public void filterUserWithEmptyBodyResponse() {
-        HttpEntity<UserView> entityNull = new HttpEntity(null, headers);
-        ResponseEntity<String> responseNull = restTemplate.exchange(
+        HttpEntity entityNull = new HttpEntity(null, headers);
+        ResponseEntity<UserView[]> responseNull = restTemplate.exchange(
                 createURL("/user/list"),
-                HttpMethod.POST, entityNull, String.class);
+                HttpMethod.POST, entityNull, UserView[].class);
     }
 
     /**
@@ -102,9 +103,9 @@ public class UserControllerTest {
     @Test(expected = HttpClientErrorException.class)
     public void filterUserWithGetMethod() {
         HttpEntity<UserView> entityNull = new HttpEntity(null, headers);
-        ResponseEntity<String> responseNull = restTemplate.exchange(
+        ResponseEntity<UserView[]> responseNull = restTemplate.exchange(
                 createURL("/user/list"),
-                HttpMethod.GET, entityNull, String.class);
+                HttpMethod.GET, entityNull, UserView[].class);
     }
 
     /**
@@ -119,7 +120,6 @@ public class UserControllerTest {
         UserView actualUserView = createUserViewGetByIdGetById();
         Assert.assertEquals("200", responseSuccess.getStatusCode().toString());
         Assert.assertEquals(String.valueOf(actualUserView), String.valueOf(responseSuccess.getBody()));
-
     }
 
     /**
@@ -128,9 +128,9 @@ public class UserControllerTest {
     @Test(expected = HttpClientErrorException.class)
     public void getUserByNotAvailableId() {
         HttpEntity<UserView> entityNotFound = new HttpEntity(null, headers);
-        ResponseEntity<String> responseNotFound = restTemplate.exchange(
+        ResponseEntity<UserView[]> responseNotFound = restTemplate.exchange(
                 createURL("/user/14s5s"),
-                HttpMethod.GET, entityNotFound, String.class);
+                HttpMethod.GET, entityNotFound, UserView[].class);
     }
 
     /**
@@ -143,10 +143,9 @@ public class UserControllerTest {
         userViewSuccess.firstName = "Геннадий";
         userViewSuccess.position = "Директор";
         HttpEntity<UserView> entitySuccess = new HttpEntity(userViewSuccess, headers);
-        ResponseEntity<String> responseSuccess = restTemplate.exchange(
+        ResponseEntity<SuccessView> responseSuccess = restTemplate.exchange(
                 createURL("/user/update"),
-                HttpMethod.POST, entitySuccess, String.class);
-        Assert.assertEquals("{\"data\":{\"result\":\"success\"}}", responseSuccess.getBody());
+                HttpMethod.POST, entitySuccess, SuccessView.class);
         Assert.assertEquals("200", responseSuccess.getStatusCode().toString());
     }
 
@@ -158,9 +157,9 @@ public class UserControllerTest {
         UserView userView = new UserView();
         userView.id = 1L;
         HttpEntity<UserView> entityNotFound = new HttpEntity(userView, headers);
-            ResponseEntity<String> responseNotFound = restTemplate.exchange(
-                    createURL("/user/update"),
-                    HttpMethod.POST, entityNotFound, String.class);
+        ResponseEntity<SuccessView> responseNotFound = restTemplate.exchange(
+                createURL("/user/update"),
+                HttpMethod.POST, entityNotFound, SuccessView.class);
     }
 
     /**
@@ -169,9 +168,9 @@ public class UserControllerTest {
     @Test(expected = HttpClientErrorException.class)
     public void updateUserWithNullBodyResponse() {
         HttpEntity<UserView> entityNull = new HttpEntity(null, headers);
-            ResponseEntity<String> responseNull = restTemplate.exchange(
-                    createURL("/user/update"),
-                    HttpMethod.POST, entityNull, String.class);
+        ResponseEntity<SuccessView> responseNull = restTemplate.exchange(
+                createURL("/user/update"),
+                HttpMethod.POST, entityNull, SuccessView.class);
     }
 
     /**
@@ -180,9 +179,9 @@ public class UserControllerTest {
     @Test(expected = HttpClientErrorException.class)
     public void updateUserGetMethod() {
         HttpEntity<UserView> entityNull = new HttpEntity(null, headers);
-        ResponseEntity<String> responseNull = restTemplate.exchange(
+        ResponseEntity<SuccessView> responseNull = restTemplate.exchange(
                 createURL("/user/update"),
-                HttpMethod.GET, entityNull, String.class);
+                HttpMethod.GET, entityNull, SuccessView.class);
     }
 
     /**
@@ -194,10 +193,9 @@ public class UserControllerTest {
         userViewSuccess.firstName = "Геннадий";
         userViewSuccess.position = "Директор";
         HttpEntity<UserView> entitySuccess = new HttpEntity(userViewSuccess, headers);
-        ResponseEntity<String> responseSuccess = restTemplate.exchange(
+        ResponseEntity<SuccessView> responseSuccess = restTemplate.exchange(
                 createURL("/user/save"),
-                HttpMethod.POST, entitySuccess, String.class);
-        Assert.assertEquals("{\"data\":{\"result\":\"success\"}}", responseSuccess.getBody());
+                HttpMethod.POST, entitySuccess, SuccessView.class);
         Assert.assertEquals("200", responseSuccess.getStatusCode().toString());
     }
 
@@ -209,9 +207,9 @@ public class UserControllerTest {
         UserView userView = new UserView();
         userView.firstName = "Геннадий";
         HttpEntity<UserView> entityNotFound = new HttpEntity(userView, headers);
-            ResponseEntity<String> responseNotFound = restTemplate.exchange(
-                    createURL("/user/update"),
-                    HttpMethod.POST, entityNotFound, String.class);
+        ResponseEntity<SuccessView> responseNotFound = restTemplate.exchange(
+                createURL("/user/update"),
+                HttpMethod.POST, entityNotFound, SuccessView.class);
     }
 
     /**
@@ -220,9 +218,9 @@ public class UserControllerTest {
     @Test(expected = HttpClientErrorException.class)
     public void saveUserWithNullBodyResponse() {
         HttpEntity<UserView> entity = new HttpEntity(null, headers);
-            ResponseEntity<String> response = restTemplate.exchange(
-                    createURL("/user/save"),
-                    HttpMethod.POST, entity, String.class);
+        ResponseEntity<SuccessView> response = restTemplate.exchange(
+                createURL("/user/save"),
+                HttpMethod.POST, entity, SuccessView.class);
     }
 
     /**
@@ -231,9 +229,9 @@ public class UserControllerTest {
     @Test(expected = HttpClientErrorException.class)
     public void saveUserGetMethod() {
         HttpEntity<UserView> entityNull = new HttpEntity(null, headers);
-        ResponseEntity<String> responseNull = restTemplate.exchange(
+        ResponseEntity<SuccessView> responseNull = restTemplate.exchange(
                 createURL("/user/save"),
-                HttpMethod.GET, entityNull, String.class);
+                HttpMethod.GET, entityNull, SuccessView.class);
     }
 
     private String createURL(String url) {
@@ -265,10 +263,9 @@ public class UserControllerTest {
         userView.citizenshipCode = "643";
         userView.citizenshipName = "Российская Федерация";
         return userView;
-
     }
 
-    private User createUser(){
+    private User createUser() {
         User user = new User(1L, "Михаил", "Уточкин", "Петрович", "Директор", "89275588712", true);
         DocType docType = new DocType("Паспорт гражданина Российской Федерации", "21");
         Country country = new Country("Российская Федерация", "643");
@@ -276,5 +273,4 @@ public class UserControllerTest {
         user.setDocument(document);
         return user;
     }
-
 }

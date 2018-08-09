@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import ru.bellintegrator.practice.Application;
+import ru.bellintegrator.practice.response.SuccessView;
 
 
 /**
@@ -36,10 +37,10 @@ public class CountryControllerTest {
      */
     @Test
     public void getCountriesGetMethod() {
-        HttpEntity<String> entityWithNullBody = new HttpEntity(null, headers);
-        ResponseEntity<String> response = restTemplate.exchange(
+        HttpEntity entityWithNullBody = new HttpEntity(null, headers);
+        ResponseEntity<SuccessView> response = restTemplate.exchange(
                 createURL("/countries"),
-                HttpMethod.GET, entityWithNullBody, String.class);
+                HttpMethod.GET, entityWithNullBody, SuccessView.class);
         Assert.assertEquals("200", response.getStatusCode().toString());
     }
 
@@ -48,10 +49,10 @@ public class CountryControllerTest {
      */
     @Test(expected = HttpClientErrorException.class)
     public void exceptionWithGetCountriesPostMethod() {
-        HttpEntity<String> entityWithNullBody = new HttpEntity(null, headers);
-        ResponseEntity<String> response = restTemplate.exchange(
+        HttpEntity entityWithNullBody = new HttpEntity(null, headers);
+        ResponseEntity<SuccessView> response = restTemplate.exchange(
                 createURL("/countries"),
-                HttpMethod.POST, entityWithNullBody, String.class);
+                HttpMethod.POST, entityWithNullBody, SuccessView.class);
     }
 
     private String createURL(String url) {

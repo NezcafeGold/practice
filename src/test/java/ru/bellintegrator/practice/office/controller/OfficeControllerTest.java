@@ -13,7 +13,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.bellintegrator.practice.Application;
 import ru.bellintegrator.practice.office.view.OfficeView;
 import ru.bellintegrator.practice.response.SuccessView;
@@ -55,7 +54,8 @@ public class OfficeControllerTest {
         ResponseEntity<OfficeView[]> postForEntity = restTemplate.postForEntity(createURL("/office/list"),
                 officeViewSuccess, OfficeView[].class);
         Assert.assertEquals("200", postForEntity.getStatusCode().toString());
-        Assert.assertEquals(String.valueOf(officeViewExpected), String.valueOf(postForEntity.getBody()[0]));
+        Assert.assertEquals(officeViewExpected, postForEntity.getBody()[0]);
+
     }
 
     /**
@@ -63,10 +63,10 @@ public class OfficeControllerTest {
      */
     @Test(expected = HttpClientErrorException.class)
     public void filterOfficeGetMethod() {
-        HttpEntity<String> entityWithNullBody = new HttpEntity(null, headers);
-        ResponseEntity<String> response = restTemplate.exchange(
+        HttpEntity entityWithNullBody = new HttpEntity(null, headers);
+        ResponseEntity<OfficeView[]> response = restTemplate.exchange(
                 createURL("/office/list"),
-                HttpMethod.GET, entityWithNullBody, String.class);
+                HttpMethod.GET, entityWithNullBody, OfficeView[].class);
     }
 
     /**
@@ -74,11 +74,10 @@ public class OfficeControllerTest {
      */
     @Test(expected = HttpClientErrorException.class)
     public void exceptionWithFilterOfficeEmptyBodeEntity() {
-
-        HttpEntity<OfficeView> entityBadRequest = new HttpEntity(null, headers);
-        ResponseEntity<String> responseBadRequest = restTemplate.exchange(
+        HttpEntity entityBadRequest = new HttpEntity(null, headers);
+        ResponseEntity<OfficeView[]> responseBadRequest = restTemplate.exchange(
                 createURL("/office/list"),
-                HttpMethod.POST, entityBadRequest, String.class);
+                HttpMethod.POST, entityBadRequest, OfficeView[].class);
     }
 
     /**
@@ -100,10 +99,10 @@ public class OfficeControllerTest {
      */
     @Test(expected = HttpClientErrorException.class)
     public void getOfficeByIdPostMethod() {
-        HttpEntity<String> entityWithNullBody = new HttpEntity(null, headers);
-        ResponseEntity<String> response = restTemplate.exchange(
+        HttpEntity entityWithNullBody = new HttpEntity(null, headers);
+        ResponseEntity<OfficeView> response = restTemplate.exchange(
                 createURL("/office/1"),
-                HttpMethod.POST, entityWithNullBody, String.class);
+                HttpMethod.POST, entityWithNullBody, OfficeView.class);
     }
 
     /**
@@ -127,10 +126,9 @@ public class OfficeControllerTest {
         officeViewSuccess.name = "Пушкинский";
         officeViewSuccess.address = "ул. Пушкина";
         HttpEntity<OfficeView> entitySuccess = new HttpEntity(officeViewSuccess, headers);
-        ResponseEntity<String> responseSuccess = restTemplate.exchange(
+        ResponseEntity<SuccessView> responseSuccess = restTemplate.exchange(
                 createURL("/office/update"),
-                HttpMethod.POST, entitySuccess, String.class);
-        Assert.assertEquals("{\"data\":{\"result\":\"success\"}}", responseSuccess.getBody());
+                HttpMethod.POST, entitySuccess, SuccessView.class);
         Assert.assertEquals("200", responseSuccess.getStatusCode().toString());
     }
 
@@ -139,10 +137,10 @@ public class OfficeControllerTest {
      */
     @Test(expected = HttpClientErrorException.class)
     public void updateOfficeGetMethod() {
-        HttpEntity<String> entityWithNullBody = new HttpEntity(null, headers);
-        ResponseEntity<String> response = restTemplate.exchange(
+        HttpEntity entityWithNullBody = new HttpEntity(null, headers);
+        ResponseEntity<SuccessView> response = restTemplate.exchange(
                 createURL("/office/update"),
-                HttpMethod.GET, entityWithNullBody, String.class);
+                HttpMethod.GET, entityWithNullBody, SuccessView.class);
     }
 
     /**
@@ -153,9 +151,9 @@ public class OfficeControllerTest {
         OfficeView officeViewNotFound = new OfficeView();
         officeViewNotFound.id = 5L;
         HttpEntity<OfficeView> entityNotFound = new HttpEntity(officeViewNotFound, headers);
-        ResponseEntity<String> responseNotFound = restTemplate.exchange(
+        ResponseEntity<SuccessView> responseNotFound = restTemplate.exchange(
                 createURL("/office/update"),
-                HttpMethod.POST, entityNotFound, String.class);
+                HttpMethod.POST, entityNotFound, SuccessView.class);
     }
 
     /**
@@ -164,9 +162,9 @@ public class OfficeControllerTest {
     @Test(expected = HttpClientErrorException.class)
     public void updateOfficeWithEmptyBodyResponse() {
         HttpEntity<OfficeView> entityNull = new HttpEntity(null, headers);
-        ResponseEntity<String> responseNull = restTemplate.exchange(
+        ResponseEntity<SuccessView> responseNull = restTemplate.exchange(
                 createURL("/office/update"),
-                HttpMethod.POST, entityNull, String.class);
+                HttpMethod.POST, entityNull, SuccessView.class);
     }
 
     /**
@@ -178,10 +176,9 @@ public class OfficeControllerTest {
         officeViewSuccess.name = "Пушкинский";
         officeViewSuccess.address = "ул. Пушкина";
         HttpEntity<OfficeView> entitySuccess = new HttpEntity(officeViewSuccess, headers);
-        ResponseEntity<String> responseSuccess = restTemplate.exchange(
+        ResponseEntity<SuccessView> responseSuccess = restTemplate.exchange(
                 createURL("/office/save"),
-                HttpMethod.POST, entitySuccess, String.class);
-        Assert.assertEquals("{\"data\":{\"result\":\"success\"}}", responseSuccess.getBody());
+                HttpMethod.POST, entitySuccess, SuccessView.class);
         Assert.assertEquals("200", responseSuccess.getStatusCode().toString());
     }
 
@@ -190,10 +187,10 @@ public class OfficeControllerTest {
      */
     @Test(expected = HttpClientErrorException.class)
     public void saveOfficeGetMethod() {
-        HttpEntity<String> entityWithNullBody = new HttpEntity(null, headers);
-        ResponseEntity<String> response = restTemplate.exchange(
+        HttpEntity entityWithNullBody = new HttpEntity(null, headers);
+        ResponseEntity<SuccessView> response = restTemplate.exchange(
                 createURL("/office/save"),
-                HttpMethod.GET, entityWithNullBody, String.class);
+                HttpMethod.GET, entityWithNullBody, SuccessView.class);
     }
 
     /**
@@ -204,9 +201,9 @@ public class OfficeControllerTest {
         OfficeView officeView = new OfficeView();
         officeView.id = 5L;
         HttpEntity<OfficeView> entity = new HttpEntity(officeView, headers);
-        ResponseEntity<String> response = restTemplate.exchange(
+        ResponseEntity<SuccessView> response = restTemplate.exchange(
                 createURL("/office/save"),
-                HttpMethod.POST, entity, String.class);
+                HttpMethod.POST, entity, SuccessView.class);
     }
 
     /**
@@ -214,10 +211,10 @@ public class OfficeControllerTest {
      */
     @Test(expected = HttpClientErrorException.class)
     public void saveOfficeWithEmptyBodyResponse() {
-        HttpEntity<OfficeView> entityNull = new HttpEntity(null, headers);
-        ResponseEntity<String> responseNull = restTemplate.exchange(
+        HttpEntity entityNull = new HttpEntity(null, headers);
+        ResponseEntity<SuccessView> responseNull = restTemplate.exchange(
                 createURL("/office/save"),
-                HttpMethod.POST, entityNull, String.class);
+                HttpMethod.POST, entityNull, SuccessView.class);
     }
 
     private String createURL(String url) {

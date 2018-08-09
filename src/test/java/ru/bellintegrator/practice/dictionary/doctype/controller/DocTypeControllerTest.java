@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import ru.bellintegrator.practice.Application;
+import ru.bellintegrator.practice.response.SuccessView;
 
 /**
  * Тест для проверки контроллера
@@ -36,10 +37,10 @@ public class DocTypeControllerTest {
      */
     @Test
     public void getDocTypesGetMethod() {
-        HttpEntity<String> entityWithNullBody = new HttpEntity(null, headers);
-        ResponseEntity<String> response = restTemplate.exchange(
+        HttpEntity entityWithNullBody = new HttpEntity(null, headers);
+        ResponseEntity<SuccessView> response = restTemplate.exchange(
                 createURL("/docs"),
-                HttpMethod.GET, entityWithNullBody, String.class);
+                HttpMethod.GET, entityWithNullBody, SuccessView.class);
         Assert.assertEquals("200", response.getStatusCode().toString());
     }
 
@@ -48,10 +49,10 @@ public class DocTypeControllerTest {
      */
     @Test(expected = HttpClientErrorException.class)
     public void exceptionWithGetDocTypesPostMethod() {
-        HttpEntity<String> entityWithNullBody = new HttpEntity(null, headers);
-        ResponseEntity<String> response = restTemplate.exchange(
+        HttpEntity entityWithNullBody = new HttpEntity(null, headers);
+        ResponseEntity<SuccessView> response = restTemplate.exchange(
                 createURL("/docs"),
-                HttpMethod.POST, entityWithNullBody, String.class);
+                HttpMethod.POST, entityWithNullBody, SuccessView.class);
     }
 
     private String createURL(String url) {

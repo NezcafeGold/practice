@@ -16,6 +16,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import ru.bellintegrator.practice.Application;
 import ru.bellintegrator.practice.organization.view.OrganizationView;
+import ru.bellintegrator.practice.response.SuccessView;
 
 /**
  * Тест для проверки контроллера организации
@@ -59,10 +60,10 @@ public class OrganizationControllerTest {
      */
     @Test(expected = HttpClientErrorException.class)
     public void filterOrganizationWithNullBodyResponse() {
-        HttpEntity<OrganizationView> entity = new HttpEntity(null, headers);
-        ResponseEntity<String> response = restTemplate.exchange(
+        HttpEntity entity = new HttpEntity(null, headers);
+        ResponseEntity<OrganizationView[]> response = restTemplate.exchange(
                 createURL("/organization/list"),
-                HttpMethod.POST, entity, String.class);
+                HttpMethod.POST, entity, OrganizationView[].class);
     }
 
     /**
@@ -70,10 +71,10 @@ public class OrganizationControllerTest {
      */
     @Test(expected = HttpClientErrorException.class)
     public void filterOrganizationGetMethod() {
-        HttpEntity<OrganizationView> entity = new HttpEntity(null, headers);
-        ResponseEntity<String> response = restTemplate.exchange(
+        HttpEntity entity = new HttpEntity(null, headers);
+        ResponseEntity<SuccessView> response = restTemplate.exchange(
                 createURL("/organization/list"),
-                HttpMethod.GET, entity, String.class);
+                HttpMethod.GET, entity, SuccessView.class);
     }
 
     /**
@@ -81,7 +82,7 @@ public class OrganizationControllerTest {
      */
     @Test
     public void getOrganizationByIdWithAvailableId() {
-        HttpEntity<OrganizationView> entitySuccess = new HttpEntity(null, headers);
+        HttpEntity entitySuccess = new HttpEntity(null, headers);
         ResponseEntity<OrganizationView> responseSuccess = restTemplate.exchange(
                 createURL("/organization/2"),
                 HttpMethod.GET, entitySuccess, OrganizationView.class);
@@ -95,10 +96,10 @@ public class OrganizationControllerTest {
      */
     @Test(expected = HttpClientErrorException.class)
     public void getOrganizationByIdWithNotAvailableId() {
-        HttpEntity<OrganizationView> entityNotFound = new HttpEntity(null, headers);
-        ResponseEntity<String> responseNotFound = restTemplate.exchange(
+        HttpEntity entityNotFound = new HttpEntity(null, headers);
+        ResponseEntity<OrganizationView> responseNotFound = restTemplate.exchange(
                 createURL("/user/14s5s"),
-                HttpMethod.GET, entityNotFound, String.class);
+                HttpMethod.GET, entityNotFound, OrganizationView.class);
     }
 
     /**
@@ -106,10 +107,10 @@ public class OrganizationControllerTest {
      */
     @Test(expected = HttpClientErrorException.class)
     public void getOrganizationByIdPostMethod() {
-        HttpEntity<OrganizationView> entityNotFound = new HttpEntity(null, headers);
-        ResponseEntity<String> responseNotFound = restTemplate.exchange(
+        HttpEntity entityNotFound = new HttpEntity(null, headers);
+        ResponseEntity<OrganizationView> responseNotFound = restTemplate.exchange(
                 createURL("/user/14s5s"),
-                HttpMethod.POST, entityNotFound, String.class);
+                HttpMethod.POST, entityNotFound, OrganizationView.class);
     }
 
     /**
@@ -150,10 +151,10 @@ public class OrganizationControllerTest {
      */
     @Test(expected = HttpClientErrorException.class)
     public void updateOrganizationWithNullBodyResponse() {
-        HttpEntity<OrganizationView> entityNull = new HttpEntity(null, headers);
-        ResponseEntity<String> responseNull = restTemplate.exchange(
+        HttpEntity entityNull = new HttpEntity(null, headers);
+        ResponseEntity<SuccessView> responseNull = restTemplate.exchange(
                 createURL("/organization/update"),
-                HttpMethod.POST, entityNull, String.class);
+                HttpMethod.POST, entityNull, SuccessView.class);
     }
 
     /**
@@ -161,10 +162,10 @@ public class OrganizationControllerTest {
      */
     @Test(expected = HttpClientErrorException.class)
     public void updateOrganizationGetMethod() {
-        HttpEntity<OrganizationView> entityNull = new HttpEntity(null, headers);
-        ResponseEntity<String> responseNull = restTemplate.exchange(
+        HttpEntity entityNull = new HttpEntity(null, headers);
+        ResponseEntity<SuccessView> responseNull = restTemplate.exchange(
                 createURL("/organization/update"),
-                HttpMethod.GET, entityNull, String.class);
+                HttpMethod.GET, entityNull, SuccessView.class);
     }
 
     /**
@@ -179,9 +180,9 @@ public class OrganizationControllerTest {
         orgViewSuccess.kpp = "442424";
         orgViewSuccess.address = "ул. Пушкина, 22";
         HttpEntity<OrganizationView> entitySuccess = new HttpEntity(orgViewSuccess, headers);
-        ResponseEntity<String> responseSuccess = restTemplate.exchange(
+        ResponseEntity<SuccessView> responseSuccess = restTemplate.exchange(
                 createURL("/organization/save"),
-                HttpMethod.POST, entitySuccess, String.class);
+                HttpMethod.POST, entitySuccess, SuccessView.class);
         Assert.assertEquals("{\"data\":{\"result\":\"success\"}}", responseSuccess.getBody());
         Assert.assertEquals("200", responseSuccess.getStatusCode().toString());
     }
@@ -194,9 +195,9 @@ public class OrganizationControllerTest {
         OrganizationView orgViewNotFound = new OrganizationView();
         orgViewNotFound.id = 1L;
         HttpEntity<OrganizationView> entityNotFound = new HttpEntity(orgViewNotFound, headers);
-            ResponseEntity<String> responseNotFound = restTemplate.exchange(
+            ResponseEntity<SuccessView> responseNotFound = restTemplate.exchange(
                     createURL("/organization/save"),
-                    HttpMethod.POST, entityNotFound, String.class);
+                    HttpMethod.POST, entityNotFound, SuccessView.class);
     }
 
     /**
@@ -205,9 +206,9 @@ public class OrganizationControllerTest {
     @Test(expected = HttpClientErrorException.class)
     public void saveOrganizationWithNullBodyResponse() {
         HttpEntity<OrganizationView> entityNull = new HttpEntity(null, headers);
-        ResponseEntity<String> responseNull = restTemplate.exchange(
+        ResponseEntity<SuccessView> responseNull = restTemplate.exchange(
                 createURL("/organization/save"),
-                HttpMethod.POST, entityNull, String.class);
+                HttpMethod.POST, entityNull, SuccessView.class);
     }
 
     private String createURL(String url) {

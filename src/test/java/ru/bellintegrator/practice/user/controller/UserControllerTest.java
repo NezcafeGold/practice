@@ -70,8 +70,13 @@ public class UserControllerTest {
         ResponseEntity<UserView[]> responseSuccessFull = restTemplate.exchange(
                 createURL("/user/list"),
                 HttpMethod.POST, entitySuccessFull, UserView[].class);
-        UserView userView = createUserViewForFilter();
-        Assert.assertEquals(String.valueOf(userView), String.valueOf(responseSuccessFull.getBody()[0]));
+        UserView expectedUserView = createUserViewForFilter();
+        UserView actualUserView = responseSuccessFull.getBody()[0];
+        Assert.assertEquals(expectedUserView.id, actualUserView.id);
+        Assert.assertEquals(expectedUserView.firstName, actualUserView.firstName);
+        Assert.assertEquals(expectedUserView.secondName, actualUserView.secondName);
+        Assert.assertEquals(expectedUserView.middleName, actualUserView.middleName);
+        Assert.assertEquals(expectedUserView.position, actualUserView.position);
     }
 
     /**
@@ -117,9 +122,21 @@ public class UserControllerTest {
         ResponseEntity<UserView> responseSuccess = restTemplate.exchange(
                 createURL("/user/1"),
                 HttpMethod.GET, entitySuccess, UserView.class);
-        UserView actualUserView = createUserViewGetByIdGetById();
+        UserView expectedUserView = createUserViewGetByIdGetById();
+        UserView actualUserView = responseSuccess.getBody();
         Assert.assertEquals("200", responseSuccess.getStatusCode().toString());
-        Assert.assertEquals(String.valueOf(actualUserView), String.valueOf(responseSuccess.getBody()));
+        Assert.assertEquals(expectedUserView.id, actualUserView.id);
+        Assert.assertEquals(expectedUserView.firstName, actualUserView.firstName);
+        Assert.assertEquals(expectedUserView.secondName, actualUserView.secondName);
+        Assert.assertEquals(expectedUserView.middleName, actualUserView.middleName);
+        Assert.assertEquals(expectedUserView.position, actualUserView.position);
+        Assert.assertEquals(expectedUserView.phone, actualUserView.phone);
+        Assert.assertEquals(expectedUserView.isIdentified, actualUserView.isIdentified);
+        Assert.assertEquals(expectedUserView.docName, actualUserView.docName);
+        Assert.assertEquals(expectedUserView.docNumber, actualUserView.docNumber);
+        Assert.assertEquals(expectedUserView.docDate, actualUserView.docDate);
+        Assert.assertEquals(expectedUserView.citizenshipCode, actualUserView.citizenshipCode);
+        Assert.assertEquals(expectedUserView.citizenshipName, actualUserView.citizenshipName);
     }
 
     /**

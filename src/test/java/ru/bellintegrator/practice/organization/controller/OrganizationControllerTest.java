@@ -47,12 +47,18 @@ public class OrganizationControllerTest {
                 HttpMethod.POST, entitySuccess, OrganizationView[].class);
         OrganizationView expectedValue = createOrgViewForFilter();
         Assert.assertEquals("200", responseSuccess.getStatusCode().toString());
-        Assert.assertEquals(String.valueOf(expectedValue), String.valueOf(responseSuccess.getBody()[0]));
+        OrganizationView actualOrgViewFromExchange = responseSuccess.getBody()[0];
+        Assert.assertEquals(expectedValue.id, actualOrgViewFromExchange.id);
+        Assert.assertEquals(expectedValue.name, actualOrgViewFromExchange.name);
+        Assert.assertEquals(expectedValue.isActive, actualOrgViewFromExchange.isActive);
 
         ResponseEntity<OrganizationView[]> postForEntity = restTemplate.postForEntity(createURL("/organization/list"),
                 entitySuccess, OrganizationView[].class);
         Assert.assertEquals("200", postForEntity.getStatusCode().toString());
-        Assert.assertEquals(String.valueOf(expectedValue), String.valueOf(postForEntity.getBody()[0]));
+        OrganizationView actualOrgView = postForEntity.getBody()[0];
+        Assert.assertEquals(expectedValue.id, actualOrgView.id);
+        Assert.assertEquals(expectedValue.name, actualOrgView.name);
+        Assert.assertEquals(expectedValue.isActive, actualOrgView.isActive);
     }
 
     /**
@@ -87,8 +93,11 @@ public class OrganizationControllerTest {
                 createURL("/organization/2"),
                 HttpMethod.GET, entitySuccess, OrganizationView.class);
         OrganizationView expectedOrgView = createOrgViewGetById();
+        OrganizationView actualOrgView = responseSuccess.getBody();
         Assert.assertEquals("200", responseSuccess.getStatusCode().toString());
-        Assert.assertEquals(String.valueOf(expectedOrgView), String.valueOf(responseSuccess.getBody()));
+        Assert.assertEquals(expectedOrgView.id, actualOrgView.id);
+        Assert.assertEquals(expectedOrgView.name, actualOrgView.name);
+        Assert.assertEquals(expectedOrgView.isActive, actualOrgView.isActive);
     }
 
     /**
@@ -183,7 +192,6 @@ public class OrganizationControllerTest {
         ResponseEntity<SuccessView> responseSuccess = restTemplate.exchange(
                 createURL("/organization/save"),
                 HttpMethod.POST, entitySuccess, SuccessView.class);
-        Assert.assertEquals("{\"data\":{\"result\":\"success\"}}", responseSuccess.getBody());
         Assert.assertEquals("200", responseSuccess.getStatusCode().toString());
     }
 

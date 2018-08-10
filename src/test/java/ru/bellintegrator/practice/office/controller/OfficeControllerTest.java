@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import ru.bellintegrator.practice.Application;
 import ru.bellintegrator.practice.office.view.OfficeView;
 import ru.bellintegrator.practice.response.SuccessView;
+import ru.bellintegrator.practice.user.view.UserView;
 
 
 /**
@@ -47,15 +48,20 @@ public class OfficeControllerTest {
         ResponseEntity<OfficeView[]> responseSuccess = restTemplate.exchange(
                 createURL("/office/list"),
                 HttpMethod.POST, entitySuccess, OfficeView[].class);
-
+        OfficeView actualOfficeViewExchange = responseSuccess.getBody()[0];
         Assert.assertEquals("200", responseSuccess.getStatusCode().toString());
-        Assert.assertEquals(String.valueOf(officeViewExpected), String.valueOf(responseSuccess.getBody()[0]));
+        Assert.assertEquals(officeViewExpected.id, actualOfficeViewExchange.id);
+        Assert.assertEquals(officeViewExpected.name, actualOfficeViewExchange.name);
+        Assert.assertEquals(officeViewExpected.isActive, actualOfficeViewExchange.isActive);
+
 
         ResponseEntity<OfficeView[]> postForEntity = restTemplate.postForEntity(createURL("/office/list"),
                 officeViewSuccess, OfficeView[].class);
         Assert.assertEquals("200", postForEntity.getStatusCode().toString());
-        Assert.assertEquals(officeViewExpected, postForEntity.getBody()[0]);
-
+        OfficeView actualOfficeViewEntity = postForEntity.getBody()[0];
+        Assert.assertEquals(officeViewExpected.id, actualOfficeViewEntity.id);
+        Assert.assertEquals(officeViewExpected.name, actualOfficeViewEntity.name);
+        Assert.assertEquals(officeViewExpected.isActive, actualOfficeViewEntity.isActive);
     }
 
     /**
